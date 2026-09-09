@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+@theme {
+  --color-studio-red: #dc2626;
+  --color-studio-wine: #7f1d1d;
+  --color-studio-gold: #f59e0b;
+  --color-studio-black: #0A0A0A;
+}
+
+:root {
+  --color-studio-red: #dc2626;
+  --color-studio-wine: #7f1d1d;
+  --color-studio-gold: #f59e0b;
+  --color-studio-black: #0A0A0A;
+}
+
+/* Custom editorial styles matching the original 3COVANGOC studio design */
+.editorial-tag {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.5em;
+  color: var(--color-studio-gold);
+  text-transform: uppercase;
+}
+
+.editorial-tag span {
+  display: inline-block;
+  height: 1px;
+  width: 2rem;
+  background-color: var(--color-studio-gold);
+}
+
+.glass-card {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: rgba(23, 23, 23, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+::-webkit-scrollbar-thumb {
+  background: #262626;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #dc2626;
+}

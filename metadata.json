@@ -1,0 +1,6 @@
+{
+  "name": "3COVANGOC Studio",
+  "description": "Website chính thức của 3COVANGOC Studio - Creative Studio chuyên về hoạt hình 3D, motion graphics và kể chuyện bằng hình ảnh.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
