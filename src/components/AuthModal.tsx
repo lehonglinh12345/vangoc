@@ -110,9 +110,9 @@ export default function AuthModal() {
             <div className="text-center mb-5">
               <div className="w-14 h-14 rounded-2xl bg-studio-red/15 border border-studio-red/30 flex items-center justify-center mx-auto mb-3 shadow-lg shadow-studio-red/10">
                 <img
-                  src="/images/logo.png"
+                  src="/images/logo_new.jpg"
                   alt="3 Cổ Và Ngốc Studio"
-                  className="w-9 h-9 object-contain"
+                  className="w-full h-full object-cover rounded-2xl"
                 />
               </div>
               <h3 className="text-xl font-black text-white uppercase tracking-wider">

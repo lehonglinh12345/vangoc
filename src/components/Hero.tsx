@@ -30,7 +30,7 @@ export default function Hero({ onOpenTrailerModal }: HeroProps) {
       <div className="absolute inset-0 z-0 bg-[#0A0A0A]">
         <div className="absolute inset-0 z-0 will-change-transform">
           <img
-            src="/images/input_file_1.png"
+            src="/images/background.jpg"
             alt="Hero Background"
             className="w-full h-full object-cover scale-[1.08] md:scale-105 opacity-60 filter brightness-90"
             fetchPriority="high"

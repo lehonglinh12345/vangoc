@@ -30,9 +30,9 @@ export default function Footer() {
                 <div className="absolute inset-0 rounded-full border border-studio-red/20 animate-ping opacity-30" />
                 <div className="relative w-full h-full rounded-full bg-black/40 backdrop-blur-md border border-white/10 flex items-center justify-center overflow-hidden shadow-[0_0_30px_rgba(255,0,0,0.15)] group-hover:scale-110 transition-all duration-500">
                   <img
-                    src="/images/logo.png"
+                    src="/images/logo_new.jpg"
                     alt="3covangoc Studio Logo"
-                    className="w-10 h-10 object-contain drop-shadow-[0_0_15px_rgba(255,0,0,0.45)] group-hover:rotate-6 transition-transform duration-500"
+                    className="w-full h-full object-cover rounded-full drop-shadow-[0_0_15px_rgba(255,0,0,0.45)] group-hover:rotate-6 transition-transform duration-500"
                     loading="lazy"
                     decoding="async"
                   />

@@ -30,7 +30,7 @@ export default function LoadingScreen() {
             className="absolute inset-0 z-0 will-change-transform pointer-events-none"
           >
             <img
-              src="/images/input_file_1.png"
+              src="/images/background.jpg"
               alt="Loading Background"
               className="w-full h-full object-cover"
               referrerPolicy="no-referrer"
@@ -45,9 +45,9 @@ export default function LoadingScreen() {
             className="w-48 h-48 md:w-64 md:h-64 relative z-10 will-change-transform"
           >
             <img
-              src="/images/input_file_0.png"
+              src="/images/logo_new.jpg"
               alt="3covangoc Studio Logo"
-              className="w-full h-full object-contain filter drop-shadow-[0_0_20px_rgba(220,38,38,0.4)]"
+              className="w-full h-full object-cover rounded-full filter drop-shadow-[0_0_20px_rgba(220,38,38,0.4)]"
               referrerPolicy="no-referrer"
             />
             <motion.div

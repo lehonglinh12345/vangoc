@@ -107,9 +107,9 @@ export default function Navbar() {
             <div className="absolute inset-0 rounded-full border border-studio-red/20 animate-ping opacity-30" />
             <div className="relative w-full h-full rounded-full bg-black/50 backdrop-blur-md border border-white/10 flex items-center justify-center overflow-hidden shadow-[0_0_30px_rgba(255,0,0,0.15)] group-hover:scale-110 transition-all duration-500">
               <img
-                src="/images/logo.png"
+                src="/images/logo_new.jpg"
                 alt="3covangoc Studio Logo"
-                className="w-8 h-8 md:w-10 md:h-10 object-contain drop-shadow-[0_0_15px_rgba(255,0,0,0.45)] group-hover:rotate-6 transition-transform duration-500"
+                className="w-full h-full object-cover rounded-full drop-shadow-[0_0_15px_rgba(255,0,0,0.45)] group-hover:rotate-6 transition-transform duration-500"
               />
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
               <div className="absolute inset-0 bg-studio-red/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
