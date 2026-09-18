@@ -3,6 +3,7 @@ export type Language = 'vi' | 'en' | 'ja';
 export interface Episode {
   id: string;
   title: string;
+  description?: string;
   duration?: string;
   videoUrl?: string;
   thumbnail?: string;

@@ -10,15 +10,7 @@ export const PROJECTS: Project[] = [
 
 Sau khoảng thời gian thực hiện và hoàn thiện, chúng tôi rất vui khi được mang bộ phim đến với mọi người trên YouTube và FanPage chính thức. 💛
 
-Một câu chuyện vừa hài hước, gần gũi nhưng cũng đầy cảm xúc về gia đình, đám giỗ và những yêu thương đôi khi chưa kịp nói thành lời.
-
----
-🎬 OFFICIAL POSTER | RỰC SÁNG ĐÊM THU 🌕
-Trung Thu năm nay, mời nhà mình cùng Vàng Ngọc bước vào một hành trình thật rực rỡ để tìm lại những ký ức thân quen về gia đình, tuổi thơ và những điều được truyền từ thế hệ này sang thế hệ khác 🏮✨
-Còn chuyện gì đang chờ Vàng Ngọc trong đêm thu này? Hẹn nhà mình cùng khám phá trong “Rực Sáng Đêm Thu” nhé!
-
-⏰ Chính thức khởi chiếu: 19:00 | 20.09.2026
-Trên kênh Youtube 3CoVaNgoc Studio`,
+Một câu chuyện vừa hài hước, gần gũi nhưng cũng đầy cảm xúc về gia đình, đám giỗ và những yêu thương đôi khi chưa kịp nói thành lời.`,
     mainImage: '/images/input_file_1.png',
     gallery: [
       '/images/input_file_1.png',
@@ -40,6 +32,12 @@ Trên kênh Youtube 3CoVaNgoc Studio`,
       {
         id: 'ep2',
         title: 'Tập 2: RỰC SÁNG ĐÊM THU (Sắp khởi chiếu 20.09.2026)',
+        description: `🎬 OFFICIAL POSTER | RỰC SÁNG ĐÊM THU 🌕
+Trung Thu năm nay, mời nhà mình cùng Vàng Ngọc bước vào một hành trình thật rực rỡ để tìm lại những ký ức thân quen về gia đình, tuổi thơ và những điều được truyền từ thế hệ này sang thế hệ khác 🏮✨
+Còn chuyện gì đang chờ Vàng Ngọc trong đêm thu này? Hẹn nhà mình cùng khám phá trong “Rực Sáng Đêm Thu” nhé!
+
+⏰ Chính thức khởi chiếu: 19:00 | 20.09.2026
+Trên kênh Youtube 3CoVaNgoc Studio`,
         isPlaceholder: true
       },
       {

@@ -170,7 +170,7 @@ export default function ProjectDetail() {
 
             {/* Story Text */}
             <div className="text-neutral-300 text-sm md:text-base leading-relaxed space-y-4 whitespace-pre-line font-light border-l-2 border-studio-wine pl-6">
-              {project.description}
+              {activeEpisode.description || project.description}
             </div>
 
             {/* Tags */}
