@@ -32,7 +32,7 @@ export default function LoadingScreen() {
             <img
               src="/images/background.jpg"
               alt="Loading Background"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover md:object-[center_20%]"
               referrerPolicy="no-referrer"
             />
           </motion.div>

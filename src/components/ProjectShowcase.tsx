@@ -88,15 +88,18 @@ export default function ProjectShowcase() {
             viewport={{ once: true }}
             className="group relative cursor-pointer active:scale-[0.98] transition-transform duration-200"
           >
-            <div className="relative aspect-[4/5] rounded-2xl md:rounded-3xl overflow-hidden border border-dashed border-white/20 bg-white/[0.02] flex flex-col items-center justify-center p-8 text-center group-hover:border-studio-red/50 transition-all duration-500 h-full">
+            <div 
+              className="relative aspect-[4/5] rounded-2xl md:rounded-3xl overflow-hidden border border-dashed border-white/20 bg-white/[0.02] flex flex-col items-center justify-center p-8 text-center group-hover:border-studio-red/50 transition-all duration-500 h-full"
+              onClick={() => alert("Danh sách toàn bộ dự án của nhóm đang được cập nhật. Bạn quay lại sau nhé!")}
+            >
               <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-6 group-hover:bg-studio-red group-hover:text-white transition-all duration-500 text-neutral-400">
                 <Layers size={24} />
               </div>
               <h4 className="text-xl font-bold text-white uppercase tracking-tight mb-2">
-                Kho ý tưởng đồ sộ
+                Dự án của nhóm
               </h4>
               <p className="text-neutral-500 text-xs uppercase tracking-widest leading-relaxed max-w-xs">
-                Khám phá hàng chục dự án CGI & Animation đỉnh cao khác của chúng tôi
+                Khám phá các dự án CGI & Animation đỉnh cao khác của chúng tôi
               </p>
               <div className="mt-8 text-studio-gold text-[10px] font-bold tracking-[0.3em] uppercase border border-studio-gold/20 px-6 py-3 rounded-full group-hover:bg-studio-gold group-hover:text-black transition-all">
                 Xem Portfolio

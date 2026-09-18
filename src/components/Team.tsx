@@ -7,7 +7,7 @@ export default function Team() {
   const { t } = useLanguage();
 
   const membersMeta: { image: string; position: 'top' | 'center' | 'bottom'; facebook?: string }[] = [
-    { image: "/images/lekimtho.png", position: "center", facebook: "" },
+    { image: "/images/lekimtho.png", position: "center", facebook: "https://www.facebook.com/kimtho.le.946" },
     { image: "/images/letienphat.png", position: "top", facebook: "https://www.facebook.com/tien.phat.le.181361" },
     { image: "/images/trichibao.png", position: "top", facebook: "https://www.facebook.com/TrinhChiBao2611" }
   ];

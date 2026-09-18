@@ -1,4 +1,4 @@
-import { ArrowUp, Facebook, Youtube } from 'lucide-react';
+import { ArrowUp, Facebook, Youtube, Instagram } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 export default function Footer() {
@@ -118,6 +118,24 @@ export default function Footer() {
                 title="TikTok"
               >
                 <span className="font-bold text-[11px]">TT</span>
+              </a>
+              <a
+                href="https://www.instagram.com/3covangoc.studio/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-white hover:bg-pink-600 transition-colors"
+                title="Instagram"
+              >
+                <Instagram size={16} />
+              </a>
+              <a
+                href="https://www.threads.com/@3covangocstudio"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-white hover:bg-neutral-800 transition-colors"
+                title="Threads"
+              >
+                <span className="font-bold text-[11px]">TH</span>
               </a>
             </div>
           </div>

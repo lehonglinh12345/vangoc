@@ -32,7 +32,7 @@ export default function Hero({ onOpenTrailerModal }: HeroProps) {
           <img
             src="/images/background.jpg"
             alt="Hero Background"
-            className="w-full h-full object-cover scale-[1.08] md:scale-105 opacity-60 filter brightness-90"
+            className="w-full h-full object-cover md:object-[center_20%] scale-[1.08] md:scale-105 opacity-60 filter brightness-90"
             fetchPriority="high"
           />
         </div>
