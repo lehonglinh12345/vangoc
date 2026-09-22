@@ -7,6 +7,8 @@ export interface Episode {
   duration?: string;
   videoUrl?: string;
   thumbnail?: string;
+  views?: string;
+  date?: string;
   isPlaceholder?: boolean;
 }
 

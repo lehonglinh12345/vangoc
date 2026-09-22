@@ -125,32 +125,7 @@ export default function ProjectDetail() {
             )}
           </div>
 
-          {/* Episode Selectors */}
-          <div className="mt-6 flex items-center gap-3 overflow-x-auto pb-2 scrollbar-none">
-            <span className="text-xs font-bold uppercase tracking-widest text-neutral-500 whitespace-nowrap mr-2">
-              Danh sách tập:
-            </span>
-            {project.episodes.map((ep) => {
-              const isActive = activeEpisode.id === ep.id;
-              return (
-                <button
-                  key={ep.id}
-                  onClick={() => setActiveEpisode(ep)}
-                  className={`px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center gap-2 border transition-all cursor-pointer whitespace-nowrap ${
-                    isActive
-                      ? 'bg-studio-red text-white border-studio-red shadow-lg shadow-studio-red/25'
-                      : 'bg-white/5 text-neutral-400 border-white/10 hover:border-white/30 hover:text-white'
-                  }`}
-                >
-                  <Film size={14} />
-                  <span>{ep.title}</span>
-                  {ep.duration && (
-                    <span className="text-[10px] opacity-75 font-normal">({ep.duration})</span>
-                  )}
-                </button>
-              );
-            })}
-          </div>
+
         </div>
 
         {/* Project Header Bar: Title, Tags, Action Controls */}
@@ -259,6 +234,59 @@ export default function ProjectDetail() {
               >
                 {t.projects?.modal?.cta || 'Liên hệ với 3COVANGOC STUDIO'}
               </Link>
+            </div>
+
+            {/* YouTube-style Video Recommendations */}
+            <div className="mt-8">
+              <h3 className="text-sm font-bold uppercase tracking-widest text-white mb-5 flex items-center gap-2">
+                <Film size={16} className="text-studio-red" />
+                Gợi ý phim
+              </h3>
+              <div className="flex flex-col gap-4">
+                {project.episodes.filter(ep => ep.id !== activeEpisode.id).map((ep) => (
+                  <div 
+                    key={ep.id} 
+                    className="flex gap-3 group cursor-pointer"
+                    onClick={() => {
+                      setActiveEpisode(ep);
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                  >
+                    {/* Thumbnail */}
+                    <div className="relative w-36 sm:w-40 aspect-video rounded-xl overflow-hidden shrink-0 bg-neutral-900 border border-white/10">
+                      <img 
+                        src={ep.thumbnail || project.mainImage} 
+                        alt={ep.title} 
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                      />
+                      {ep.duration && (
+                        <span className="absolute bottom-1.5 right-1.5 bg-black/80 backdrop-blur-sm text-white text-[10px] px-1.5 py-0.5 rounded font-medium">
+                          {ep.duration}
+                        </span>
+                      )}
+                      {ep.isPlaceholder && (
+                        <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                           <span className="text-[10px] font-bold uppercase tracking-wider text-studio-gold border border-studio-gold/50 px-2 py-0.5 rounded-full bg-black/50">Sắp ra mắt</span>
+                        </div>
+                      )}
+                    </div>
+                    {/* Info */}
+                    <div className="flex flex-col justify-start py-0.5">
+                      <h4 className="text-sm font-bold text-white leading-snug group-hover:text-studio-red transition-colors line-clamp-2">
+                        {ep.title}
+                      </h4>
+                      <span className="text-[11px] text-neutral-400 mt-1.5 line-clamp-1">3COVANGOC Studio</span>
+                      {!ep.isPlaceholder && (ep.views || ep.date) && (
+                        <span className="text-[11px] text-neutral-500 mt-0.5">
+                          {ep.views ? `${ep.views} lượt xem` : ''} 
+                          {ep.views && ep.date ? ' • ' : ''} 
+                          {ep.date ? ep.date : ''}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>

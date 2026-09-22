@@ -9,10 +9,11 @@ import TrailerModal from '../components/TrailerModal';
 
 export default function Home() {
   const [trailerModalOpen, setTrailerModalOpen] = useState(false);
+  const [trailerIndex, setTrailerIndex] = useState(0);
 
   return (
     <main className="relative z-10">
-      <Hero onOpenTrailerModal={() => setTrailerModalOpen(true)} />
+      <Hero onOpenTrailerModal={(idx) => { setTrailerIndex(idx); setTrailerModalOpen(true); }} />
       <About />
       <Services />
       <ProjectShowcase />
@@ -22,6 +23,7 @@ export default function Home() {
       <TrailerModal
         isOpen={trailerModalOpen}
         onClose={() => setTrailerModalOpen(false)}
+        trailerIndex={trailerIndex}
       />
     </main>
   );

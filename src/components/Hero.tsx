@@ -1,10 +1,10 @@
-import { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'motion/react';
+import { useRef, useState, useEffect } from 'react';
+import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
 import { Play } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 interface HeroProps {
-  onOpenTrailerModal: () => void;
+  onOpenTrailerModal: (index: number) => void;
 }
 
 export default function Hero({ onOpenTrailerModal }: HeroProps) {
@@ -12,6 +12,19 @@ export default function Hero({ onOpenTrailerModal }: HeroProps) {
   const heroRef = useRef<HTMLElement>(null);
   const { scrollY } = useScroll();
   const scrollIndicatorOpacity = useTransform(scrollY, [0, 250], [1, 0]);
+
+  const [bgIndex, setBgIndex] = useState(0);
+  const backgrounds = [
+    '/images/background.jpg',
+    '/images/input_file_2.png'
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setBgIndex((prev) => (prev === 0 ? 1 : 0));
+    }, 6000);
+    return () => clearInterval(interval);
+  }, []);
 
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
@@ -28,16 +41,51 @@ export default function Hero({ onOpenTrailerModal }: HeroProps) {
     >
       {/* Background with Ambient Gradients */}
       <div className="absolute inset-0 z-0 bg-[#0A0A0A]">
-        <div className="absolute inset-0 z-0 will-change-transform">
-          <img
-            src="/images/background.jpg"
-            alt="Hero Background"
-            className="w-full h-full object-cover md:object-[center_20%] scale-[1.08] md:scale-105 opacity-60 filter brightness-90"
-            fetchPriority="high"
-          />
+        <div className="absolute inset-0 z-0 will-change-transform bg-[#0A0A0A]">
+          <AnimatePresence mode="popLayout">
+            <motion.img
+              key={bgIndex}
+              src={backgrounds[bgIndex]}
+              initial={{ opacity: 0, scale: 1.05 }}
+              animate={{ opacity: 0.6, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.05 }}
+              transition={{ duration: 6, ease: "easeInOut" }}
+              alt="Hero Background"
+              className="absolute inset-0 w-full h-full object-cover md:object-[center_20%] filter brightness-90"
+            />
+          </AnimatePresence>
         </div>
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/40 via-[#0A0A0A]/75 to-[#0A0A0A] z-10" />
-        
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent opacity-70 z-10" />
+
+        {/* Mid-Autumn Lantern Decorations */}
+        <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden">
+          {[...Array(6)].map((_, i) => (
+            <motion.div
+              key={`lantern-${i}`}
+              className="absolute -bottom-24 w-8 h-12 md:w-10 md:h-16 rounded-full bg-gradient-to-t from-red-600/60 to-orange-400/40 blur-[1px]"
+              initial={{ 
+                x: `${Math.random() * 100}vw`,
+                scale: Math.random() * 0.4 + 0.6
+              }}
+              animate={{ 
+                y: ["0vh", "-120vh"],
+                x: [`${Math.random() * 100}vw`, `${Math.random() * 100}vw`]
+              }}
+              transition={{ 
+                duration: Math.random() * 15 + 20, 
+                repeat: Infinity, 
+                ease: "linear",
+                delay: Math.random() * -20 // Negative delay so they are already on screen
+              }}
+            >
+              {/* Inner glow of the lantern */}
+              <div className="absolute inset-1 bg-yellow-300/40 animate-pulse rounded-full blur-sm" />
+              {/* Lantern tail */}
+              <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-1 h-6 bg-red-500/50 blur-[1px]" />
+            </motion.div>
+          ))}
+        </div>
+
         {/* Radial Lighting Orbs */}
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[radial-gradient(circle,rgba(220,38,38,0.18)_0%,rgba(0,0,0,0)_70%)] rounded-full z-1 transform-gpu pointer-events-none hidden md:block" />
         <div className="absolute bottom-1/4 right-1/4 w-[30rem] h-[30rem] bg-[radial-gradient(circle,rgba(220,38,38,0.1)_0%,rgba(0,0,0,0)_70%)] rounded-full z-1 transform-gpu pointer-events-none hidden md:block" />
@@ -57,7 +105,7 @@ export default function Hero({ onOpenTrailerModal }: HeroProps) {
 
       <div className="container mx-auto px-6 relative z-20">
         <div className="grid grid-cols-12 gap-10 lg:gap-12 items-center">
-          
+
           {/* Left Column: Typography and CTAs */}
           <motion.div
             initial="hidden"
@@ -153,20 +201,26 @@ export default function Hero({ onOpenTrailerModal }: HeroProps) {
             viewport={{ once: true }}
             className="col-span-12 xl:col-span-5 relative mt-6 xl:mt-0 max-w-xs sm:max-w-sm md:max-w-md xl:max-w-[360px] 2xl:max-w-[400px] mx-auto xl:ml-auto xl:mr-0 w-full will-change-transform"
           >
-            <div className="relative group cursor-pointer" onClick={onOpenTrailerModal}>
+            <div className="relative group cursor-pointer" onClick={() => onOpenTrailerModal(bgIndex)}>
               {/* Radial glow */}
               <div className="absolute -inset-4 bg-[radial-gradient(circle,rgba(220,38,38,0.25)_0%,rgba(0,0,0,0)_70%)] opacity-100 xl:opacity-40 xl:group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
 
               {/* Video Container Frame */}
               <div className="relative aspect-video w-full rounded-xl md:rounded-2xl overflow-hidden border border-white/15 bg-black shadow-2xl">
-                {/* Embed Facebook reel trailer with click-to-open fallback */}
+                {/* Embed YouTube trailer for Nhà Có Giỗ */}
                 <iframe
-                  src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1467677221505904&show_text=false&t=0&autoplay=1&muted=1"
-                  className="w-full h-full border-none overflow-hidden transition-all duration-700 group-hover:scale-105 pointer-events-none"
-                  scrolling="no"
-                  frameBorder="0"
-                  allowFullScreen
-                  title="3COVANGOC Trailer Reel"
+                  src="https://www.youtube.com/embed/TM142-7LiiQ?autoplay=1&mute=1&controls=0&loop=1&playlist=TM142-7LiiQ"
+                  className={`absolute inset-0 w-full h-full border-none overflow-hidden transition-all duration-1000 group-hover:scale-105 pointer-events-none ${bgIndex === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+                  allow="autoplay; encrypted-media"
+                  title="Trailer Nhà Có Giỗ"
+                />
+
+                {/* Embed YouTube trailer for Rực Sáng Đêm Thu */}
+                <iframe
+                  src="https://www.youtube.com/embed/v7f4NHtvGR8?autoplay=1&mute=1&controls=0&loop=1&playlist=v7f4NHtvGR8"
+                  className={`absolute inset-0 w-full h-full border-none overflow-hidden transition-all duration-1000 group-hover:scale-105 pointer-events-none ${bgIndex === 1 ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+                  allow="autoplay; encrypted-media"
+                  title="Trailer Rực Sáng Đêm Thu"
                 />
 
                 {/* Vignette Gradient Overlay */}
@@ -191,8 +245,8 @@ export default function Hero({ onOpenTrailerModal }: HeroProps) {
                         {t.hero.deepProject}
                       </span>
                     </div>
-                    <h3 className="text-sm md:text-base font-bold text-white uppercase tracking-tight drop-shadow-md">
-                      TRAILER NHÀ CÓ GIỖ
+                    <h3 className="text-sm md:text-base font-bold text-white uppercase tracking-tight drop-shadow-md transition-all duration-500">
+                      {bgIndex === 0 ? "TRAILER NHÀ CÓ GIỖ" : "TRAILER RỰC SÁNG ĐÊM THU"}
                     </h3>
                   </div>
 

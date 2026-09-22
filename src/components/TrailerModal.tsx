@@ -5,10 +5,28 @@ import { useLanguage } from '../context/LanguageContext';
 interface TrailerModalProps {
   isOpen: boolean;
   onClose: () => void;
+  trailerIndex: number;
 }
 
-export default function TrailerModal({ isOpen, onClose }: TrailerModalProps) {
+export default function TrailerModal({ isOpen, onClose, trailerIndex }: TrailerModalProps) {
   const { t } = useLanguage();
+
+  const trailers = [
+    {
+      title: "NHÀ CÓ GIỖ",
+      fullTitle: "NHÀ CÓ GIỖ (3D Short Film)",
+      desc: "Một câu chuyện vừa hài hước, vừa cảm động về tình thân gia đình Việt.",
+      src: "https://www.youtube.com/embed/TM142-7LiiQ?autoplay=1&rel=0"
+    },
+    {
+      title: "RỰC SÁNG ĐÊM THU",
+      fullTitle: "RỰC SÁNG ĐÊM THU (3D Animation)",
+      desc: "Một hành trình rực rỡ tìm lại những ký ức thân quen về gia đình và tuổi thơ.",
+      src: "https://www.youtube.com/embed/v7f4NHtvGR8?autoplay=1&rel=0"
+    }
+  ];
+
+  const currentTrailer = trailers[trailerIndex || 0];
 
   return (
     <AnimatePresence>
@@ -33,7 +51,7 @@ export default function TrailerModal({ isOpen, onClose }: TrailerModalProps) {
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-studio-red animate-pulse" />
                 <span className="text-[11px] font-bold uppercase tracking-widest text-white">
-                  {t.hero.trailer} — NHÀ CÓ GIỖ
+                  {t.hero.trailer} — {currentTrailer.title}
                 </span>
               </div>
               <button
@@ -48,8 +66,8 @@ export default function TrailerModal({ isOpen, onClose }: TrailerModalProps) {
             {/* Video player iframe (YouTube embed with autoplay) */}
             <div className="relative aspect-video w-full bg-black">
               <iframe
-                src="https://www.youtube.com/embed/TM142-7LiiQ?autoplay=1&rel=0"
-                title="NHÀ CÓ GIỖ - 3COVANGOC Studio"
+                src={currentTrailer.src}
+                title={`${currentTrailer.title} - 3COVANGOC Studio`}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
                 className="w-full h-full border-0"
@@ -60,10 +78,10 @@ export default function TrailerModal({ isOpen, onClose }: TrailerModalProps) {
             <div className="px-5 py-3.5 bg-neutral-950 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <h4 className="text-xs sm:text-sm font-bold text-white uppercase tracking-wider mb-0.5">
-                  NHÀ CÓ GIỖ (3D Short Film)
+                  {currentTrailer.fullTitle}
                 </h4>
                 <p className="text-neutral-400 text-[11px] line-clamp-1">
-                  Một câu chuyện vừa hài hước, vừa cảm động về tình thân gia đình Việt.
+                  {currentTrailer.desc}
                 </p>
               </div>
               <button

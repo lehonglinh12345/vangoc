@@ -115,11 +115,28 @@ export default function Navbar() {
               <div className="absolute inset-0 bg-studio-red/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             </div>
           </Link>
-          <Link
-            to="/"
-            className="text-lg md:text-xl font-bold tracking-widest uppercase text-white hidden sm:block hover:text-studio-gold transition-colors"
-          >
-            3covangoc Studio
+          <Link to="/" className="hidden sm:block">
+            <div className="w-56 md:w-64 overflow-hidden relative group">
+              <motion.div
+                className="flex whitespace-nowrap items-center"
+                animate={{ x: ["0%", "-50%"] }}
+                transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+              >
+                <div className="pr-6 flex items-center">
+                  <span className="text-lg md:text-xl font-black tracking-widest uppercase text-yellow-400 group-hover:text-yellow-300 transition-colors drop-shadow-[0_0_10px_rgba(250,204,21,0.5)] flex items-center gap-2">
+                    <span className="text-xl">🌕</span> 3COVANGOC STUDIO <span className="text-xl">🏮</span>
+                  </span>
+                </div>
+                <div className="pr-6 flex items-center">
+                  <span className="text-lg md:text-xl font-black tracking-widest uppercase text-yellow-400 group-hover:text-yellow-300 transition-colors drop-shadow-[0_0_10px_rgba(250,204,21,0.5)] flex items-center gap-2">
+                    <span className="text-xl">🌕</span> 3COVANGOC STUDIO <span className="text-xl">🏮</span>
+                  </span>
+                </div>
+              </motion.div>
+              {/* Optional fade edges so it looks smooth entering/exiting */}
+              <div className="absolute inset-y-0 left-0 w-6 bg-gradient-to-r from-neutral-950 to-transparent pointer-events-none" />
+              <div className="absolute inset-y-0 right-0 w-6 bg-gradient-to-l from-neutral-950 to-transparent pointer-events-none" />
+            </div>
           </Link>
         </div>
 
