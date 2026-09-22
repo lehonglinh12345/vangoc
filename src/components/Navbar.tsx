@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { Menu, X, User as UserIcon, LogOut } from 'lucide-react';
+import { Menu, X, User as UserIcon, LogOut, Sun, Moon, ChevronDown, Globe } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
 import { Language } from '../types';
@@ -15,6 +15,7 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
+  const [langOpen, setLangOpen] = useState(false);
 
   const isHomePage = location.pathname === '/';
 
@@ -30,7 +31,7 @@ export default function Navbar() {
   useEffect(() => {
     if (!isHomePage) return;
     const sections = ['home', 'about', 'services', 'projects', 'team', 'contact'];
-    
+
     const observerCallback: IntersectionObserverCallback = (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
@@ -87,11 +88,10 @@ export default function Navbar() {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 py-6 px-6 lg:px-12 flex justify-between items-center will-change-transform ${
-          isScrolled || mobileMenuOpen
-            ? 'bg-[#0A0A0A]/90 md:bg-[#0A0A0A]/85 backdrop-blur-md py-4 border-b border-white/5 shadow-2xl'
-            : 'bg-transparent shadow-none'
-        }`}
+        className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 py-6 px-6 lg:px-12 flex justify-between items-center will-change-transform ${isScrolled || mobileMenuOpen
+          ? 'bg-[#0A0A0A]/90 md:bg-[#0A0A0A]/85 backdrop-blur-md py-4 border-b border-white/5 shadow-2xl'
+          : 'bg-transparent shadow-none'
+          }`}
       >
         {/* Brand Logo */}
         <div className="flex items-center gap-4">
@@ -115,29 +115,34 @@ export default function Navbar() {
               <div className="absolute inset-0 bg-studio-red/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             </div>
           </Link>
-          <Link to="/" className="hidden sm:block">
-            <div className="w-56 md:w-64 overflow-hidden relative group">
-              <motion.div
-                className="flex whitespace-nowrap items-center"
-                animate={{ x: ["0%", "-50%"] }}
-                transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
-              >
-                <div className="pr-6 flex items-center">
-                  <span className="text-lg md:text-xl font-black tracking-widest uppercase text-yellow-400 group-hover:text-yellow-300 transition-colors drop-shadow-[0_0_10px_rgba(250,204,21,0.5)] flex items-center gap-2">
-                    <span className="text-xl">🌕</span> 3COVANGOC STUDIO <span className="text-xl">🏮</span>
-                  </span>
-                </div>
-                <div className="pr-6 flex items-center">
-                  <span className="text-lg md:text-xl font-black tracking-widest uppercase text-yellow-400 group-hover:text-yellow-300 transition-colors drop-shadow-[0_0_10px_rgba(250,204,21,0.5)] flex items-center gap-2">
-                    <span className="text-xl">🌕</span> 3COVANGOC STUDIO <span className="text-xl">🏮</span>
-                  </span>
-                </div>
-              </motion.div>
-              {/* Optional fade edges so it looks smooth entering/exiting */}
+          <Link to="/" className="block">
+            <div className="w-28 sm:w-56 md:w-64 overflow-hidden relative group">
+              <style>{`
+                @keyframes marquee-infinite {
+                  0%   { transform: translateX(0); }
+                  100% { transform: translateX(-50%); }
+                }
+                .marquee-track {
+                  animation: marquee-infinite 12s linear infinite;
+                  will-change: transform;
+                }
+              `}</style>
+              <div className="marquee-track flex whitespace-nowrap items-center">
+                {[0, 1, 2, 3].map((i) => (
+                  <div key={i} className="pr-8 flex items-center shrink-0">
+                    <span className="text-lg md:text-xl font-black tracking-widest uppercase text-yellow-400 group-hover:text-yellow-300 transition-colors drop-shadow-[0_0_10px_rgba(250,204,21,0.5)] flex items-center gap-2">
+                      <span className="text-xl"></span> 3COVANGOC STUDIO <span className="text-xl">🏮</span>
+                    </span>
+                  </div>
+                ))}
+              </div>
+              {/* Fade edges */}
               <div className="absolute inset-y-0 left-0 w-6 bg-gradient-to-r from-neutral-950 to-transparent pointer-events-none" />
               <div className="absolute inset-y-0 right-0 w-6 bg-gradient-to-l from-neutral-950 to-transparent pointer-events-none" />
             </div>
+
           </Link>
+
         </div>
 
         {/* Desktop Navigation Links */}
@@ -149,9 +154,8 @@ export default function Navbar() {
                 <button
                   key={item.id}
                   onClick={() => handleNavClick(item.id)}
-                  className={`text-[11px] font-semibold uppercase tracking-[0.3em] transition-all relative py-1 cursor-pointer ${
-                    isActive ? 'text-studio-red' : 'text-white/70 hover:text-white'
-                  }`}
+                  className={`text-[11px] font-semibold uppercase tracking-[0.3em] transition-all relative py-1 cursor-pointer ${isActive ? 'text-studio-red' : 'text-white/70 hover:text-white'
+                    }`}
                 >
                   {item.name}
                   {isActive && (
@@ -176,21 +180,36 @@ export default function Navbar() {
 
         {/* Right Action Area: Language Switcher + User Profile/Auth + Mobile Trigger */}
         <div className="flex items-center gap-3 sm:gap-4">
-          {/* Language Switcher */}
-          <div className="flex items-center bg-white/5 rounded-full p-1 border border-white/10">
-            {languages.map((l) => (
-              <button
-                key={l.code}
-                onClick={() => setLanguage(l.code)}
-                className={`px-2.5 sm:px-3 py-1 rounded-full text-[10px] font-bold tracking-wider transition-all cursor-pointer ${
-                  language === l.code
-                    ? 'bg-studio-red text-white shadow-lg shadow-studio-red/30'
-                    : 'text-white/40 hover:text-white/70'
-                }`}
-              >
-                {l.label}
-              </button>
-            ))}
+          {/* Language Switcher Dropdown */}
+          <div className="relative">
+            <button
+              onClick={() => setLangOpen(prev => !prev)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-all cursor-pointer"
+            >
+              <Globe size={12} className="text-white/60" />
+              <span className="text-[10px] font-bold tracking-wider text-white/80">
+                {languages.find(l => l.code === language)?.label}
+              </span>
+              <ChevronDown size={11} className={`text-white/50 transition-transform duration-200 ${langOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            {langOpen && (
+              <div className="absolute right-0 top-full mt-2 bg-[#1a1a1a] border border-white/10 rounded-xl overflow-hidden shadow-2xl z-50">
+                {languages.map((l) => (
+                  <button
+                    key={l.code}
+                    onClick={() => { setLanguage(l.code); setLangOpen(false); }}
+                    className={`w-full px-4 py-2 text-[10px] font-bold tracking-wider text-left transition-all cursor-pointer ${
+                      language === l.code
+                        ? 'bg-studio-red text-white'
+                        : 'text-white/60 hover:bg-white/5 hover:text-white'
+                    }`}
+                  >
+                    {l.label}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* User Profile / Login */}
@@ -263,9 +282,8 @@ export default function Navbar() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.04 * idx }}
                     onClick={() => handleNavClick(item.id)}
-                    className={`text-sm font-bold uppercase tracking-[0.4em] transition-colors pb-2 border-b w-full ${
-                      isActive ? 'text-studio-red border-studio-red' : 'text-white/60 border-white/5'
-                    }`}
+                    className={`text-sm font-bold uppercase tracking-[0.4em] transition-colors pb-2 border-b w-full ${isActive ? 'text-studio-red border-studio-red' : 'text-white/60 border-white/5'
+                      }`}
                   >
                     {item.name}
                   </motion.button>

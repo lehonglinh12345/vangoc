@@ -199,7 +199,7 @@ export default function Hero({ onOpenTrailerModal }: HeroProps) {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.2, delay: 0.4, ease: [0.76, 0, 0.24, 1] }}
             viewport={{ once: true }}
-            className="col-span-12 xl:col-span-5 relative mt-6 xl:mt-0 max-w-xs sm:max-w-sm md:max-w-md xl:max-w-[360px] 2xl:max-w-[400px] mx-auto xl:ml-auto xl:mr-0 w-full will-change-transform"
+            className="col-span-12 xl:col-span-5 relative mt-6 xl:mt-0 max-w-xs sm:max-w-sm md:max-w-md xl:max-w-[480px] 2xl:max-w-[540px] ml-0 mr-auto xl:ml-auto xl:mr-0 w-full will-change-transform"
           >
             <div className="relative group cursor-pointer" onClick={() => onOpenTrailerModal(bgIndex)}>
               {/* Radial glow */}
