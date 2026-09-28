@@ -79,7 +79,7 @@ Còn chuyện gì đang chờ Vàng Ngọc trong đêm thu này? Hẹn nhà mìn
       },
       {
         id: 'ep1',
-        title: 'Mâm cỗ ngày giỗ',
+        title: 'Nhà Có Giỗ',
         duration: '10:24',
         videoUrl: 'https://www.youtube.com/embed/TM142-7LiiQ?autoplay=1',
         thumbnail: 'https://img.youtube.com/vi/TM142-7LiiQ/maxresdefault.jpg',

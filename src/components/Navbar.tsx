@@ -168,13 +168,40 @@ export default function Navbar() {
                 </button>
               );
             })}
-          {!isHomePage && (
+          {isHomePage && (
             <Link
-              to="/"
-              className="text-[11px] font-semibold uppercase tracking-[0.3em] text-white/70 hover:text-white transition-colors"
+              to="/brand"
+              className="text-[11px] font-semibold uppercase tracking-[0.3em] text-studio-gold/80 hover:text-studio-gold transition-colors"
             >
-              {t.nav.home}
+              Thương Hiệu
             </Link>
+          )}
+          {!isHomePage && (
+            <>
+              <Link
+                to="/"
+                className="text-[11px] font-semibold uppercase tracking-[0.3em] text-white/70 hover:text-white transition-colors"
+              >
+                {t.nav.home}
+              </Link>
+              <Link
+                to="/brand"
+                className={`text-[11px] font-semibold uppercase tracking-[0.3em] transition-all relative py-1 cursor-pointer ${
+                  location.pathname === '/brand'
+                    ? 'text-studio-gold'
+                    : 'text-white/70 hover:text-white'
+                }`}
+              >
+                Thương Hiệu
+                {location.pathname === '/brand' && (
+                  <motion.span
+                    layoutId="activeNav"
+                    className="absolute -bottom-1 left-0 w-full h-[1.5px] bg-studio-gold"
+                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                  />
+                )}
+              </Link>
+            </>
           )}
         </div>
 
@@ -199,11 +226,10 @@ export default function Navbar() {
                   <button
                     key={l.code}
                     onClick={() => { setLanguage(l.code); setLangOpen(false); }}
-                    className={`w-full px-4 py-2 text-[10px] font-bold tracking-wider text-left transition-all cursor-pointer ${
-                      language === l.code
+                    className={`w-full px-4 py-2 text-[10px] font-bold tracking-wider text-left transition-all cursor-pointer ${language === l.code
                         ? 'bg-studio-red text-white'
                         : 'text-white/60 hover:bg-white/5 hover:text-white'
-                    }`}
+                      }`}
                   >
                     {l.label}
                   </button>
@@ -289,6 +315,15 @@ export default function Navbar() {
                   </motion.button>
                 );
               })}
+
+              {/* Brand Showcase link */}
+              <Link
+                to="/brand"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-sm font-bold uppercase tracking-[0.4em] pb-2 border-b w-full text-studio-gold/80 border-studio-gold/20 hover:text-studio-gold transition-colors"
+              >
+                ✦ Thương Hiệu
+              </Link>
 
               {user ? (
                 <div className="mt-6 flex flex-col items-center gap-3 w-full">

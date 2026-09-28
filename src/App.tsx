@@ -8,6 +8,8 @@ import AuthModal from './components/AuthModal';
 import Home from './pages/Home';
 import ProjectDetail from './pages/ProjectDetail';
 import Profile from './pages/Profile';
+import BrandShowcase from './pages/BrandShowcase';
+import Breadcrumb from './components/Breadcrumb';
 
 export default function App() {
   return (
@@ -29,12 +31,16 @@ export default function App() {
             {/* Main Sticky Navbar */}
             <Navbar />
 
+            {/* Breadcrumb - auto shows on sub-pages */}
+            <Breadcrumb />
+
             {/* Page Routes */}
             <div className="flex-grow">
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/project/:id" element={<ProjectDetail />} />
                 <Route path="/profile" element={<Profile />} />
+                <Route path="/brand" element={<BrandShowcase />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
             </div>
