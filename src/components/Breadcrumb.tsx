@@ -1,3 +1,4 @@
+import React from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { Home, ChevronRight } from 'lucide-react';
