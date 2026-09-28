@@ -4,9 +4,11 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Menu, X, User as UserIcon, LogOut, Sun, Moon, ChevronDown, Globe } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { Language } from '../types';
 
 export default function Navbar() {
+  const { theme, toggleTheme } = useTheme();
   const { t, language, setLanguage } = useLanguage();
   const { user, logout, setAuthModalOpen } = useAuth();
   const location = useLocation();
@@ -168,40 +170,13 @@ export default function Navbar() {
                 </button>
               );
             })}
-          {isHomePage && (
-            <Link
-              to="/brand"
-              className="text-[11px] font-semibold uppercase tracking-[0.3em] text-studio-gold/80 hover:text-studio-gold transition-colors"
-            >
-              Thương Hiệu
-            </Link>
-          )}
           {!isHomePage && (
-            <>
-              <Link
-                to="/"
-                className="text-[11px] font-semibold uppercase tracking-[0.3em] text-white/70 hover:text-white transition-colors"
-              >
-                {t.nav.home}
-              </Link>
-              <Link
-                to="/brand"
-                className={`text-[11px] font-semibold uppercase tracking-[0.3em] transition-all relative py-1 cursor-pointer ${
-                  location.pathname === '/brand'
-                    ? 'text-studio-gold'
-                    : 'text-white/70 hover:text-white'
-                }`}
-              >
-                Thương Hiệu
-                {location.pathname === '/brand' && (
-                  <motion.span
-                    layoutId="activeNav"
-                    className="absolute -bottom-1 left-0 w-full h-[1.5px] bg-studio-gold"
-                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                  />
-                )}
-              </Link>
-            </>
+            <Link
+              to="/"
+              className="text-[11px] font-semibold uppercase tracking-[0.3em] text-white/70 hover:text-white transition-colors"
+            >
+              {t.nav.home}
+            </Link>
           )}
         </div>
 
@@ -237,6 +212,20 @@ export default function Navbar() {
               </div>
             )}
           </div>
+
+          {/* Theme Toggle Button (Light / Dark) */}
+          <button
+            onClick={toggleTheme}
+            className="flex items-center justify-center w-8 h-8 rounded-full bg-white/5 border border-white/10 hover:bg-white/15 text-white/80 hover:text-white transition-all cursor-pointer relative group"
+            title={theme === 'dark' ? 'Chuyển sang chế độ Sáng' : 'Chuyển sang chế độ Tối'}
+            aria-label="Chuyển chế độ sáng tối"
+          >
+            {theme === 'dark' ? (
+              <Sun size={15} className="text-amber-400 group-hover:rotate-45 transition-transform duration-300" />
+            ) : (
+              <Moon size={15} className="text-indigo-400 group-hover:-rotate-12 transition-transform duration-300" />
+            )}
+          </button>
 
           {/* User Profile / Login */}
           {user ? (
@@ -316,14 +305,28 @@ export default function Navbar() {
                 );
               })}
 
-              {/* Brand Showcase link */}
-              <Link
-                to="/brand"
-                onClick={() => setMobileMenuOpen(false)}
-                className="text-sm font-bold uppercase tracking-[0.4em] pb-2 border-b w-full text-studio-gold/80 border-studio-gold/20 hover:text-studio-gold transition-colors"
-              >
-                ✦ Thương Hiệu
-              </Link>
+
+              {/* Mobile Theme Toggle Button */}
+              <div className="flex items-center justify-between w-full pt-3 pb-2 border-b border-white/5">
+                <span className="text-xs font-semibold text-white/70 uppercase tracking-wider">Chế độ giao diện</span>
+                <button
+                  type="button"
+                  onClick={toggleTheme}
+                  className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/15 text-xs font-bold text-white transition-all cursor-pointer"
+                >
+                  {theme === 'dark' ? (
+                    <>
+                      <Sun size={13} className="text-amber-400" />
+                      <span>Sáng</span>
+                    </>
+                  ) : (
+                    <>
+                      <Moon size={13} className="text-indigo-400" />
+                      <span>Tối</span>
+                    </>
+                  )}
+                </button>
+              </div>
 
               {user ? (
                 <div className="mt-6 flex flex-col items-center gap-3 w-full">

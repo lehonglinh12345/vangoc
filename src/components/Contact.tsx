@@ -1,32 +1,57 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Phone, Mail, Facebook, Youtube, CheckCircle2, Loader2 } from 'lucide-react';
+import { Phone, Mail, Facebook, Youtube, CheckCircle2, Loader2, RotateCcw } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { saveContactInquiry } from '../services/db';
+import ConfirmModal from './ConfirmModal';
 
 export default function Contact() {
   const { t } = useLanguage();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [service, setService] = useState('3D Animation');
+  const [message, setMessage] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showExitConfirm, setShowExitConfirm] = useState(false);
+
+  const isDirty = Boolean(name.trim() || email.trim() || message.trim());
+
+  // Prevent accidental page unload when user has unsaved text
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (isDirty) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [isDirty]);
+
+  const handleResetForm = () => {
+    setName('');
+    setEmail('');
+    setService('3D Animation');
+    setMessage('');
+    setShowExitConfirm(false);
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const form = e.currentTarget;
-    const formData = new FormData(form);
-    const name = (formData.get('name') as string)?.trim();
-    const email = (formData.get('email') as string)?.trim();
-    const service = (formData.get('service') as string)?.trim();
-    const message = (formData.get('message') as string)?.trim();
+    const cleanName = name.trim();
+    const cleanEmail = email.trim();
+    const cleanMessage = message.trim();
 
-    if (!name || !email || !message) return;
+    if (!cleanName || !cleanEmail || !cleanMessage) return;
 
     setIsSubmitting(true);
     try {
       // Save directly to Firestore database
-      await saveContactInquiry({ name, email, service, message });
+      await saveContactInquiry({ name: cleanName, email: cleanEmail, service, message: cleanMessage });
 
       setIsSubmitted(true);
-      form.reset();
+      handleResetForm();
       setTimeout(() => setIsSubmitted(false), 6000);
     } catch (err) {
       console.error('Lỗi khi gửi liên hệ:', err);
@@ -187,6 +212,8 @@ export default function Contact() {
                 <input
                   type="text"
                   name="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                   required
                   placeholder={t.contact.form.placeholderName}
                   className="w-full bg-black/40 border border-white/15 rounded-xl px-4 py-3.5 text-sm text-white placeholder:text-neutral-600 focus:outline-none focus:border-studio-red transition-colors"
@@ -200,6 +227,8 @@ export default function Contact() {
                 <input
                   type="email"
                   name="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                   placeholder={t.contact.form.placeholderEmail}
                   className="w-full bg-black/40 border border-white/15 rounded-xl px-4 py-3.5 text-sm text-white placeholder:text-neutral-600 focus:outline-none focus:border-studio-red transition-colors"
@@ -212,6 +241,8 @@ export default function Contact() {
                 </label>
                 <select
                   name="service"
+                  value={service}
+                  onChange={(e) => setService(e.target.value)}
                   className="w-full bg-black/70 border border-white/15 rounded-xl px-4 py-3.5 text-sm text-white focus:outline-none focus:border-studio-red transition-colors"
                 >
                   <option value="3D Animation">{t.contact.form.options.animation}</option>
@@ -227,6 +258,8 @@ export default function Contact() {
                 </label>
                 <textarea
                   name="message"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
                   required
                   rows={4}
                   placeholder={t.contact.form.placeholderMessage}
@@ -234,21 +267,45 @@ export default function Contact() {
                 />
               </div>
 
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full py-4 bg-studio-red disabled:opacity-50 text-white text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-studio-wine transition-all shadow-lg shadow-studio-red/30 cursor-pointer flex items-center justify-center gap-2"
-              >
-                {isSubmitting ? (
-                  <>
-                    <Loader2 size={16} className="animate-spin" />
-                    <span>Đang lưu vào database...</span>
-                  </>
-                ) : (
-                  t.contact.form.submit
+              <div className="flex flex-col sm:flex-row items-center gap-3">
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="flex-1 w-full py-4 bg-studio-red disabled:opacity-50 text-white text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-studio-wine transition-all shadow-lg shadow-studio-red/30 cursor-pointer flex items-center justify-center gap-2"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 size={16} className="animate-spin" />
+                      <span>Đang lưu vào database...</span>
+                    </>
+                  ) : (
+                    t.contact.form.submit
+                  )}
+                </button>
+
+                {isDirty && (
+                  <button
+                    type="button"
+                    onClick={() => setShowExitConfirm(true)}
+                    className="w-full sm:w-auto px-6 py-4 bg-white/5 hover:bg-white/10 text-neutral-300 hover:text-white border border-white/15 text-xs font-bold uppercase tracking-widest rounded-xl transition-all cursor-pointer flex items-center justify-center gap-2 shrink-0"
+                  >
+                    <RotateCcw size={14} />
+                    <span>Hủy & Thoát</span>
+                  </button>
                 )}
-              </button>
+              </div>
             </form>
+
+            {/* Confirmation Modal when exiting form */}
+            <ConfirmModal
+              isOpen={showExitConfirm}
+              title="Bạn có muốn thoát không?"
+              message="Nội dung bạn đang soạn thảo trong biểu mẫu liên hệ chưa được gửi đi. Bạn có chắc muốn thoát và xóa dữ liệu này?"
+              confirmText="Xác nhận thoát & xóa"
+              cancelText="Ở lại tiếp tục"
+              onConfirm={handleResetForm}
+              onCancel={() => setShowExitConfirm(false)}
+            />
           </motion.div>
 
         </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import {
   ArrowLeft,
@@ -24,6 +24,7 @@ import CommentsSection from '../components/CommentsSection';
 
 export default function ProjectDetail() {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const { t } = useLanguage();
   const { user, setAuthModalOpen } = useAuth();
 
@@ -38,6 +39,12 @@ export default function ProjectDetail() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    const currProject = PROJECTS.find((p) => p.id === id) || PROJECTS[0];
+    if (currProject && currProject.episodes.length > 0) {
+      setActiveEpisode(currProject.episodes[0]);
+    }
+    setLikesCount(currProject.likes || 0);
+    setHasLiked(localStorage.getItem(`has_liked_${currProject.id}`) === 'true');
   }, [id]);
 
   // Subscribe to real-time project likes from Firestore
@@ -81,7 +88,7 @@ export default function ProjectDetail() {
   return (
     <div className="min-h-screen bg-[#0A0A0A] text-white pt-24 pb-20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
-        
+
         {/* Top Breadcrumb Back Navigation */}
         <div className="mb-8">
           <Link
@@ -190,7 +197,7 @@ export default function ProjectDetail() {
                     <Eye size={14} /> Lượt xem
                   </span>
                   <span className="font-semibold text-white">
-                    {(project.views || 1420) + (hasLiked ? 1 : 0)}
+                    {((project.views || 1420) + (hasLiked ? 1 : 0)).toLocaleString('vi-VN')}
                   </span>
                 </div>
               </div>
@@ -199,14 +206,13 @@ export default function ProjectDetail() {
               <div className="grid grid-cols-2 gap-3 pt-2">
                 <button
                   onClick={handleLikeProject}
-                  className={`py-3 px-4 rounded-xl flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
-                    hasLiked
+                  className={`py-3 px-4 rounded-xl flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${hasLiked
                       ? 'bg-studio-red text-white shadow-lg shadow-studio-red/30'
                       : 'bg-white/5 hover:bg-white/10 text-neutral-300 border border-white/10'
-                  }`}
+                    }`}
                 >
                   <Heart size={16} className={hasLiked ? 'fill-white' : ''} />
-                  <span>{likesCount} Thích</span>
+                  <span>{likesCount.toLocaleString('vi-VN')} Thích</span>
                 </button>
 
                 <button
@@ -243,49 +249,60 @@ export default function ProjectDetail() {
                 Gợi ý phim
               </h3>
               <div className="flex flex-col gap-4">
-                {project.episodes.filter(ep => ep.id !== activeEpisode.id).map((ep) => (
-                  <div 
-                    key={ep.id} 
-                    className="flex gap-3 group cursor-pointer"
-                    onClick={() => {
-                      setActiveEpisode(ep);
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }}
-                  >
-                    {/* Thumbnail */}
-                    <div className="relative w-36 sm:w-40 aspect-video rounded-xl overflow-hidden shrink-0 bg-neutral-900 border border-white/10">
-                      <img 
-                        src={ep.thumbnail || project.mainImage} 
-                        alt={ep.title} 
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                      />
-                      {ep.duration && (
-                        <span className="absolute bottom-1.5 right-1.5 bg-black/80 backdrop-blur-sm text-white text-[10px] px-1.5 py-0.5 rounded font-medium">
-                          {ep.duration}
-                        </span>
-                      )}
-                      {ep.isPlaceholder && (
-                        <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                           <span className="text-[10px] font-bold uppercase tracking-wider text-studio-gold border border-studio-gold/50 px-2 py-0.5 rounded-full bg-black/50">Sắp ra mắt</span>
-                        </div>
-                      )}
-                    </div>
-                    {/* Info */}
-                    <div className="flex flex-col justify-start py-0.5">
-                      <h4 className="text-sm font-bold text-white leading-snug group-hover:text-studio-red transition-colors line-clamp-2">
-                        {ep.title}
-                      </h4>
-                      <span className="text-[11px] text-neutral-400 mt-1.5 line-clamp-1">3COVANGOC Studio</span>
-                      {!ep.isPlaceholder && (ep.views || ep.date) && (
+                {/* Các phim khác của Studio */}
+                {PROJECTS.filter((p) => p.id !== project.id).map((other) => {
+                  const mainEp = other.episodes[0];
+                  return (
+                    <div
+                      key={other.id}
+                      className="flex gap-3 group cursor-pointer"
+                      onClick={() => {
+                        navigate(`/project/${other.id}`);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                    >
+                      {/* Thumbnail */}
+                      <div className="relative w-36 sm:w-40 aspect-video rounded-xl overflow-hidden shrink-0 bg-neutral-900 border border-white/10">
+                        <img
+                          src={mainEp?.thumbnail || other.mainImage}
+                          alt={other.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                        {mainEp?.duration && (
+                          <span className="absolute bottom-1.5 right-1.5 bg-black/80 backdrop-blur-sm text-white text-[10px] px-1.5 py-0.5 rounded font-medium">
+                            {mainEp.duration}
+                          </span>
+                        )}
+                      </div>
+                      {/* Info */}
+                      <div className="flex flex-col justify-start py-0.5">
+                        <h4 className="text-sm font-bold text-white leading-snug group-hover:text-studio-red transition-colors line-clamp-2">
+                          {other.title}
+                        </h4>
+                        <span className="text-[11px] text-neutral-400 mt-1 line-clamp-1">3COVANGOC Studio</span>
                         <span className="text-[11px] text-neutral-500 mt-0.5">
-                          {ep.views ? `${ep.views} lượt xem` : ''} 
-                          {ep.views && ep.date ? ' • ' : ''} 
-                          {ep.date ? ep.date : ''}
+                          {mainEp?.views ? `${mainEp.views} lượt xem` : (other.views ? `${Number(other.views).toLocaleString('vi-VN')} lượt xem` : '')}
+                          {mainEp?.date ? ` • ${mainEp.date}` : ''}
                         </span>
-                      )}
+                      </div>
                     </div>
+                  );
+                })}
+
+                {/* Sắp ra mắt teaser */}
+                <div className="flex gap-3 group opacity-75">
+                  <div className="relative w-36 sm:w-40 aspect-video rounded-xl overflow-hidden shrink-0 bg-neutral-900 border border-dashed border-white/20 flex items-center justify-center">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-studio-gold border border-studio-gold/50 px-2 py-0.5 rounded-full bg-black/50">
+                      Sắp ra mắt
+                    </span>
                   </div>
-                ))}
+                  <div className="flex flex-col justify-center py-0.5">
+                    <h4 className="text-sm font-bold text-neutral-400 leading-snug">
+                      Dự án mới (Đang thực hiện)
+                    </h4>
+                    <span className="text-[11px] text-neutral-500 mt-1">3COVANGOC Studio • Coming Soon</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

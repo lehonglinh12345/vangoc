@@ -396,7 +396,7 @@ export default function Profile() {
                   <p className="text-xs text-neutral-400">{proj.category}</p>
                   <div className="flex items-center gap-1 text-[10px] text-studio-red mt-1">
                     <Heart size={10} className="fill-studio-red" />
-                    <span>{proj.likes || 388} lượt thích</span>
+                    <span>{(proj.likes || 388).toLocaleString('vi-VN')} lượt thích</span>
                   </div>
                 </div>
               </Link>

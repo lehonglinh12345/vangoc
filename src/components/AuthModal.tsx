@@ -14,6 +14,7 @@ import {
   LogIn,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import ConfirmModal from './ConfirmModal';
 
 export default function AuthModal() {
   const {
@@ -36,6 +37,9 @@ export default function AuthModal() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [showExitConfirm, setShowExitConfirm] = useState(false);
+
+  const isFormDirty = Boolean(name.trim() || email.trim() || username.trim() || password.trim());
 
   const resetForm = () => {
     setName('');
@@ -48,7 +52,16 @@ export default function AuthModal() {
   const handleClose = () => {
     clearAuthError();
     resetForm();
+    setShowExitConfirm(false);
     setAuthModalOpen(false);
+  };
+
+  const handleAttemptClose = () => {
+    if (isFormDirty) {
+      setShowExitConfirm(true);
+    } else {
+      handleClose();
+    }
   };
 
   const handleGoogleSignIn = async () => {
@@ -89,7 +102,7 @@ export default function AuthModal() {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-[9999] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto"
-          onClick={handleClose}
+          onClick={handleAttemptClose}
         >
           <motion.div
             initial={{ scale: 0.93, opacity: 0 }}
@@ -100,7 +113,7 @@ export default function AuthModal() {
           >
             {/* Close button */}
             <button
-              onClick={handleClose}
+              onClick={handleAttemptClose}
               className="absolute top-5 right-5 w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 text-white/50 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
             >
               <X size={16} />
@@ -382,6 +395,17 @@ export default function AuthModal() {
           </motion.div>
         </motion.div>
       )}
+
+      {/* Confirmation when exiting with unsaved form input */}
+      <ConfirmModal
+        isOpen={showExitConfirm}
+        title="Bạn có muốn thoát không?"
+        message="Các thông tin bạn đang nhập trong biểu mẫu tài khoản chưa được hoàn tất. Bạn có chắc muốn thoát?"
+        confirmText="Xác nhận thoát"
+        cancelText="Ở lại tiếp tục"
+        onConfirm={handleClose}
+        onCancel={() => setShowExitConfirm(false)}
+      />
     </AnimatePresence>
   );
 }

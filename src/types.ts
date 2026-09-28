@@ -45,14 +45,17 @@ export interface Comment {
   project_id: string;
   user_id: string;
   user_name: string;
+  user_tag?: string;
   user_avatar?: string;
   content: string;
   created_at: string;
   is_edited?: boolean;
+  is_pinned?: boolean;
   parent_id?: string | null;
   reply_to_name?: string;
   likes: number;
   user_reacted?: boolean;
+  youtube_url?: string;
 }
 
 export interface User {
