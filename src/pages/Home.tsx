@@ -40,7 +40,7 @@ export default function Home() {
                 CẢM NHẬN <span className="text-studio-gold">KHÁN GIẢ</span>
               </h2>
               <p className="text-neutral-400 text-sm md:text-base mt-3 max-w-xl font-normal leading-relaxed">
-                Những phản hồi, cảm nhận chân thật từ khán giả và cộng đồng mộ điệu dành cho các dự án của 3COVANGOC Studio.
+                Những phản hồi, cảm nhận chân thật từ khán giả dành cho các dự án của 3COVANGOC Studio.
               </p>
             </div>
 
@@ -49,6 +49,7 @@ export default function Home() {
               user={user}
               setAuthModalOpen={setAuthModalOpen}
               showLoginPrompt={false}
+              showCommentForm={false}
               showHeader={false}
             />
           </div>

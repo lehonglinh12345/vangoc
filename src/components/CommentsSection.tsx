@@ -9,6 +9,7 @@ interface CommentsSectionProps {
   user?: User | null;
   setAuthModalOpen?: (open: boolean) => void;
   showLoginPrompt?: boolean;
+  showCommentForm?: boolean;
   showHeader?: boolean;
   className?: string;
   variant?: 'showcase' | 'full';
@@ -80,6 +81,7 @@ export default function CommentsSection({
   user,
   setAuthModalOpen,
   showLoginPrompt = true,
+  showCommentForm = true,
   showHeader = true,
   className = '',
   maxComments = 5,
@@ -172,7 +174,7 @@ export default function CommentsSection({
         </div>
       )}
 
-      {user ? (
+      {showCommentForm && (user ? (
         <form onSubmit={handleSubmitComment} className="mb-6">
           <label htmlFor={`comment-${projectId}`} className="sr-only">
             Viết bình luận
@@ -213,7 +215,7 @@ export default function CommentsSection({
         >
           Đăng nhập để viết bình luận.
         </button>
-      ) : null}
+      ) : null)}
 
       <div className="space-y-4">
         {displayedComments.map((comment, index) => {
