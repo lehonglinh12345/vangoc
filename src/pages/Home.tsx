@@ -7,8 +7,10 @@ import CommentsSection from '../components/CommentsSection';
 import Team from '../components/Team';
 import Contact from '../components/Contact';
 import TrailerModal from '../components/TrailerModal';
+import { useAuth } from '../context/AuthContext';
 
 export default function Home() {
+  const { user, setAuthModalOpen } = useAuth();
   const [trailerModalOpen, setTrailerModalOpen] = useState(false);
   const [trailerIndex, setTrailerIndex] = useState(0);
 
@@ -42,7 +44,13 @@ export default function Home() {
               </p>
             </div>
 
-            <CommentsSection projectId="project-1" />
+            <CommentsSection
+              projectId="project-1"
+              user={user}
+              setAuthModalOpen={setAuthModalOpen}
+              showLoginPrompt={false}
+              showHeader={false}
+            />
           </div>
         </div>
       </section>

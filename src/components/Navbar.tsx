@@ -6,6 +6,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { Language } from '../types';
+import ConfirmModal from './ConfirmModal';
 
 export default function Navbar() {
   const { theme, toggleTheme } = useTheme();
@@ -18,6 +19,7 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const [langOpen, setLangOpen] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   const isHomePage = location.pathname === '/';
 
@@ -250,7 +252,7 @@ export default function Navbar() {
                 {user.name.split(' ')[0]}
               </Link>
               <button
-                onClick={logout}
+                onClick={() => setShowLogoutConfirm(true)}
                 className="text-white/40 hover:text-studio-red transition-colors ml-1 cursor-pointer"
                 title="Đăng xuất"
               >
@@ -346,8 +348,8 @@ export default function Navbar() {
                   </Link>
                   <button
                     onClick={() => {
-                      logout();
                       setMobileMenuOpen(false);
+                      setShowLogoutConfirm(true);
                     }}
                     className="text-xs text-white/50 hover:text-studio-red uppercase tracking-wider"
                   >
@@ -369,6 +371,18 @@ export default function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
+      <ConfirmModal
+        isOpen={showLogoutConfirm}
+        title="Bạn có muốn đăng xuất không?"
+        message="Bạn có chắc muốn đăng xuất khỏi tài khoản này không?"
+        confirmText="Đăng xuất"
+        cancelText="Ở lại"
+        onConfirm={() => {
+          setShowLogoutConfirm(false);
+          logout();
+        }}
+        onCancel={() => setShowLogoutConfirm(false)}
+      />
     </>
   );
 }

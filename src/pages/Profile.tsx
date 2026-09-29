@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { PROJECTS } from '../data/projects';
+import ConfirmModal from '../components/ConfirmModal';
 
 export default function Profile() {
   const { user, updateUser, logout, signInWithGoogle, setAuthModalOpen } = useAuth();
@@ -25,6 +26,7 @@ export default function Profile() {
   const [isSaved, setIsSaved] = useState(false);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [avatarUploadMsg, setAvatarUploadMsg] = useState<string | null>(null);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -181,6 +183,11 @@ export default function Profile() {
   };
 
   const handleLogout = () => {
+    setShowLogoutConfirm(true);
+  };
+
+  const confirmLogout = () => {
+    setShowLogoutConfirm(false);
     logout();
     navigate('/');
   };
@@ -404,6 +411,15 @@ export default function Profile() {
           </div>
         </div>
       </div>
+      <ConfirmModal
+        isOpen={showLogoutConfirm}
+        title="Bạn có muốn đăng xuất không?"
+        message="Bạn có chắc muốn đăng xuất khỏi tài khoản này không?"
+        confirmText="Đăng xuất"
+        cancelText="Ở lại"
+        onConfirm={confirmLogout}
+        onCancel={() => setShowLogoutConfirm(false)}
+      />
     </div>
   );
 }

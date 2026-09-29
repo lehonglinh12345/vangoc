@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
-import { Heart } from 'lucide-react';
+import { Heart, Loader2, MessageSquare, Send } from 'lucide-react';
 import { Comment, User } from '../types';
+import { addCommentToFirestore, subscribeToComments } from '../services/db';
 
 interface CommentsSectionProps {
   projectId?: string;
   user?: User | null;
   setAuthModalOpen?: (open: boolean) => void;
+  showLoginPrompt?: boolean;
+  showHeader?: boolean;
   className?: string;
   variant?: 'showcase' | 'full';
   maxComments?: number;
@@ -73,10 +76,31 @@ const INITIAL_COMMENTS: Comment[] = [
 ];
 
 export default function CommentsSection({
+  projectId = 'project-1',
+  user,
+  setAuthModalOpen,
+  showLoginPrompt = true,
+  showHeader = true,
   className = '',
   maxComments = 5,
 }: CommentsSectionProps) {
-  const [comments, setComments] = useState<Comment[]>(INITIAL_COMMENTS);
+  const [comments, setComments] = useState<Comment[]>(() =>
+    INITIAL_COMMENTS.filter((comment) => comment.project_id === projectId)
+  );
+  const [commentText, setCommentText] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const sampleComments = INITIAL_COMMENTS.filter(
+      (comment) => comment.project_id === projectId
+    );
+    setComments(sampleComments);
+
+    return subscribeToComments(projectId, (savedComments) => {
+      setComments([...savedComments, ...sampleComments]);
+    });
+  }, [projectId]);
 
   // Liked comments storage
   const [likedCommentIds, setLikedCommentIds] = useState<string[]>(() => {
@@ -112,11 +136,85 @@ export default function CommentsSection({
     );
   };
 
+  const handleSubmitComment = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const content = commentText.trim();
+    if (!user || !content || isSubmitting) return;
+
+    setIsSubmitting(true);
+    setSubmitError(null);
+    try {
+      await addCommentToFirestore(projectId, {
+        userId: user.id,
+        userName: user.name,
+        userAvatar: user.avatar,
+        content,
+      });
+      setCommentText('');
+    } catch {
+      setSubmitError('Chưa gửi được bình luận. Vui lòng thử lại.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const displayedComments = comments.slice(0, maxComments);
 
   return (
     <div className={`w-full max-w-4xl ${className}`}>
-      {/* Danh sách 5 bình luận khán giả chuẩn UI/UX */}
+      {showHeader && (
+        <div className="mb-6 flex items-center gap-2">
+          <MessageSquare size={18} className="text-studio-gold" />
+          <h2 className="text-lg font-bold uppercase tracking-wider text-white">
+            Bình luận
+          </h2>
+          <span className="text-xs text-neutral-500">({comments.length})</span>
+        </div>
+      )}
+
+      {user ? (
+        <form onSubmit={handleSubmitComment} className="mb-6">
+          <label htmlFor={`comment-${projectId}`} className="sr-only">
+            Viết bình luận
+          </label>
+          <textarea
+            id={`comment-${projectId}`}
+            value={commentText}
+            onChange={(event) => setCommentText(event.target.value)}
+            maxLength={1000}
+            rows={3}
+            placeholder="Chia sẻ cảm nhận của bạn về dự án..."
+            className="w-full resize-y rounded-xl border border-white/10 bg-neutral-900/70 p-4 text-sm text-white placeholder:text-neutral-500 focus:border-studio-gold/60 focus:outline-none"
+          />
+          <div className="mt-2 flex flex-wrap items-center justify-between gap-3">
+            <span className="text-xs text-neutral-500">
+              {commentText.length}/1000
+            </span>
+            <button
+              type="submit"
+              disabled={!commentText.trim() || isSubmitting}
+              className="inline-flex items-center gap-2 rounded-lg bg-studio-red px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-white transition-colors hover:bg-studio-wine disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {isSubmitting ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
+              {isSubmitting ? 'Đang gửi...' : 'Gửi bình luận'}
+            </button>
+          </div>
+          {submitError && (
+            <p role="alert" className="mt-2 text-sm text-red-400">
+              {submitError}
+            </p>
+          )}
+        </form>
+      ) : showLoginPrompt ? (
+        <button
+          type="button"
+          onClick={() => setAuthModalOpen?.(true)}
+          className="mb-6 w-full rounded-xl border border-white/10 bg-neutral-900/70 p-4 text-left text-sm text-neutral-300 transition-colors hover:border-studio-gold/40 hover:text-white"
+        >
+          Đăng nhập để viết bình luận.
+        </button>
+      ) : null}
+
       <div className="space-y-4">
         {displayedComments.map((comment, index) => {
           const isLiked = likedCommentIds.includes(comment.id) || comment.user_reacted;
@@ -159,20 +257,18 @@ export default function CommentsSection({
                 {/* Nút thả tim / thích */}
                 <button
                   onClick={() => handleLikeComment(comment.id)}
-                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 cursor-pointer border ${
-                    isLiked
-                      ? 'bg-red-500/20 text-red-400 border-red-500/50 shadow-[0_0_15px_rgba(239,68,68,0.4)] scale-105'
-                      : 'bg-white/5 hover:bg-white/10 text-neutral-400 hover:text-white border-white/10'
-                  }`}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 cursor-pointer border ${isLiked
+                    ? 'bg-red-500/20 text-red-400 border-red-500/50 shadow-[0_0_15px_rgba(239,68,68,0.4)] scale-105'
+                    : 'bg-white/5 hover:bg-white/10 text-neutral-400 hover:text-white border-white/10'
+                    }`}
                   title={isLiked ? 'Bỏ thích' : 'Thích bình luận'}
                 >
                   <Heart
                     size={14}
-                    className={`transition-all duration-300 ${
-                      isLiked
-                        ? 'fill-red-500 text-red-500 filter drop-shadow-[0_0_8px_rgba(239,68,68,0.9)]'
-                        : 'text-neutral-400'
-                    }`}
+                    className={`transition-all duration-300 ${isLiked
+                      ? 'fill-red-500 text-red-500 filter drop-shadow-[0_0_8px_rgba(239,68,68,0.9)]'
+                      : 'text-neutral-400'
+                      }`}
                   />
                   <span className={isLiked ? 'text-red-300 font-bold' : ''}>
                     {comment.likes}
@@ -187,6 +283,11 @@ export default function CommentsSection({
             </motion.div>
           );
         })}
+        {displayedComments.length === 0 && (
+          <p className="rounded-xl border border-white/10 bg-neutral-900/50 p-5 text-sm text-neutral-400">
+            Chưa có bình luận nào. Hãy chia sẻ cảm nhận đầu tiên.
+          </p>
+        )}
       </div>
     </div>
   );
