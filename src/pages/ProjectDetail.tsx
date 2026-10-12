@@ -95,7 +95,7 @@ export default function ProjectDetail() {
             to="/#projects"
             className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-neutral-400 hover:text-studio-gold transition-colors py-2 px-4 rounded-full bg-white/5 border border-white/10"
           >
-            <ArrowLeft size={14} /> Quay lại danh mục dự án
+            <ArrowLeft size={14} />
           </Link>
         </div>
 
@@ -207,8 +207,8 @@ export default function ProjectDetail() {
                 <button
                   onClick={handleLikeProject}
                   className={`py-3 px-4 rounded-xl flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${hasLiked
-                      ? 'bg-studio-red text-white shadow-lg shadow-studio-red/30'
-                      : 'bg-white/5 hover:bg-white/10 text-neutral-300 border border-white/10'
+                    ? 'bg-studio-red text-white shadow-lg shadow-studio-red/30'
+                    : 'bg-white/5 hover:bg-white/10 text-neutral-300 border border-white/10'
                     }`}
                 >
                   <Heart size={16} className={hasLiked ? 'fill-white' : ''} />
