@@ -169,8 +169,8 @@ export async function editCommentInFirestore(
       content: newContent,
       isEdited: true,
     });
-  } catch (error) {
-    handleFirestoreError(error, OperationType.UPDATE, path);
+  } catch (error: any) {
+    console.warn('Firestore editComment notice:', error?.message || error);
   }
 }
 
@@ -186,8 +186,8 @@ export async function toggleCommentLike(
     await updateDoc(docRef, {
       likes: newLikesCount,
     });
-  } catch (error) {
-    handleFirestoreError(error, OperationType.UPDATE, path);
+  } catch (error: any) {
+    console.warn('Firestore toggleLike notice:', error?.message || error);
   }
 }
 
@@ -200,8 +200,8 @@ export async function deleteCommentFromFirestore(
   try {
     const docRef = doc(db, 'projects', projectId, 'comments', commentId);
     await deleteDoc(docRef);
-  } catch (error) {
-    handleFirestoreError(error, OperationType.DELETE, path);
+  } catch (error: any) {
+    console.warn('Firestore deleteComment notice:', error?.message || error);
   }
 }
 
