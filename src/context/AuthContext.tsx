@@ -175,6 +175,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         );
       } else if (error?.code === 'auth/popup-closed-by-user') {
         setAuthError('Bạn đã đóng cửa sổ đăng nhập Google trước khi hoàn tất.');
+      } else if (error?.code === 'auth/unauthorized-domain') {
+        const domain = window.location.hostname;
+        setAuthError(
+          `Tên miền "${domain}" chưa được thêm vào Firebase. Vui lòng vào Firebase Console > Authentication > Settings > Authorized Domains và thêm "${domain}".`
+        );
       } else {
         setAuthError(error?.message || 'Không thể đăng nhập bằng Google lúc này.');
       }
