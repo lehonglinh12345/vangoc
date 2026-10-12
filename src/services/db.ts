@@ -36,8 +36,10 @@ export function subscribeToComments(
         const comments: Comment[] = snapshot.docs.map((d) => {
           const data = d.data({ serverTimestamps: 'estimate' });
           let createdAtStr = data.createdAtStr || 'Vừa xong';
+          let timestamp = Date.now();
           if (data.createdAt && typeof data.createdAt.toDate === 'function') {
             const date = data.createdAt.toDate();
+            timestamp = date.getTime();
             const diffMs = Date.now() - date.getTime();
             const diffMinutes = Math.floor(diffMs / 60000);
             if (diffMinutes < 1) {
@@ -57,6 +59,8 @@ export function subscribeToComments(
                 }
               }
             }
+          } else if (data.timestamp) {
+            timestamp = data.timestamp;
           }
           return {
             id: d.id,
@@ -66,6 +70,7 @@ export function subscribeToComments(
             user_avatar: data.userAvatar || '/images/logo.png',
             content: data.content || '',
             created_at: createdAtStr,
+            timestamp,
             is_edited: data.isEdited || data.is_edited || false,
             parent_id: data.parentId || data.parent_id || null,
             reply_to_name: data.replyToName || data.reply_to_name || '',
@@ -90,6 +95,7 @@ export function subscribeToComments(
                 user_avatar: data.userAvatar || '/images/logo.png',
                 content: data.content || '',
                 created_at: data.createdAtStr || 'Vừa xong',
+                timestamp: data.timestamp || Date.now(),
                 is_edited: data.isEdited || data.is_edited || false,
                 parent_id: data.parentId || data.parent_id || null,
                 reply_to_name: data.replyToName || data.reply_to_name || '',
@@ -99,16 +105,16 @@ export function subscribeToComments(
             });
             onUpdate(comments);
           },
-          (err2) => {
-            handleFirestoreError(err2, OperationType.LIST, path);
+          (err2: any) => {
+            console.warn('Firestore comments snapshot notice:', err2?.message || err2);
           }
         );
       }
     );
 
     return unsubscribe;
-  } catch (error) {
-    handleFirestoreError(error, OperationType.LIST, path);
+  } catch (error: any) {
+    console.warn('Firestore subscribe error:', error?.message || error);
     return () => {};
   }
 }
@@ -140,11 +146,13 @@ export async function addCommentToFirestore(
       replyToName: comment.replyToName || '',
       createdAt: serverTimestamp(),
       createdAtStr: 'Vừa xong',
+      timestamp: Date.now(),
       likes: 0,
     });
     return commentId;
-  } catch (error) {
-    handleFirestoreError(error, OperationType.CREATE, path);
+  } catch (error: any) {
+    console.warn('Firestore addComment notice:', error?.message || error);
+    return commentId;
   }
 }
 

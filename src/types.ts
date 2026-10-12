@@ -56,6 +56,7 @@ export interface Comment {
   likes: number;
   user_reacted?: boolean;
   youtube_url?: string;
+  timestamp?: number;
 }
 
 export interface User {

@@ -313,6 +313,7 @@ export default function CommentsSection({
       user_avatar: authorAvatar,
       content,
       created_at: 'Vừa xong',
+      timestamp: Date.now(),
       likes: 0,
       user_reacted: false,
       parent_id: replyingTo?.id || null,
@@ -376,12 +377,18 @@ export default function CommentsSection({
   });
 
   const sortedComments = [...preparedComments].sort((a, b) => {
+    // Pinned comment always at top
+    if (a.is_pinned && !b.is_pinned) return -1;
+    if (!a.is_pinned && b.is_pinned) return 1;
+
     if (sortBy === 'likes') {
       return b.likes - a.likes;
     }
-    // Newest: local 'Vừa xong' or newer ids first
-    if (a.created_at === 'Vừa xong') return -1;
-    if (b.created_at === 'Vừa xong') return 1;
+    // Newest: compare timestamp if available, else local 'Vừa xong'
+    const timeA = a.timestamp || (a.created_at === 'Vừa xong' ? Date.now() : 0);
+    const timeB = b.timestamp || (b.created_at === 'Vừa xong' ? Date.now() : 0);
+    if (timeA !== timeB) return timeB - timeA;
+
     return b.id.localeCompare(a.id);
   });
 
