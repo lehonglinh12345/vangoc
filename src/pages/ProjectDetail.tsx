@@ -86,8 +86,8 @@ export default function ProjectDetail() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-white pt-24 pb-20">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+    <div className="min-h-screen bg-[#0A0A0A] text-white pt-24 pb-20 relative z-20">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-20">
 
         {/* Top Breadcrumb Back Navigation */}
         <div className="mb-8">
@@ -99,16 +99,16 @@ export default function ProjectDetail() {
           </Link>
         </div>
 
-        {/* Main Video & Episode Player Section */}
-        <div className="mb-12">
-          <div className="relative aspect-video w-full rounded-2xl md:rounded-3xl overflow-hidden border border-white/15 bg-black shadow-2xl">
+        {/* Main Video & Episode Player Section - Đặt z-30 và isolate để các hiệu ứng Halloween (dơi z-10) bay phía dưới/sau video */}
+        <div className="mb-12 relative z-30 isolate">
+          <div className="relative aspect-video w-full rounded-2xl md:rounded-3xl overflow-hidden border border-white/15 bg-black shadow-2xl z-30">
             {activeEpisode?.videoUrl && !activeEpisode.isPlaceholder ? (
               <iframe
                 src={activeEpisode.videoUrl}
                 title={activeEpisode.title}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
-                className="w-full h-full border-0"
+                className="w-full h-full border-0 relative z-30"
               />
             ) : (
               <div className="w-full h-full flex flex-col items-center justify-center relative p-6 text-center">

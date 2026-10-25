@@ -57,48 +57,74 @@ export default function Hero({ onOpenTrailerModal }: HeroProps) {
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent opacity-70 z-10" />
 
-        {/* Mid-Autumn Lantern Decorations */}
+        {/* Halloween Atmosphere: Floating Jack-o'-lanterns, Spooky Wisps & Flying Bats */}
         <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden">
-          {[...Array(6)].map((_, i) => (
-            <motion.div
-              key={`lantern-${i}`}
-              className="absolute -bottom-24 w-8 h-12 md:w-10 md:h-16 rounded-full bg-gradient-to-t from-red-600/60 to-orange-400/40 blur-[1px]"
-              initial={{ 
-                x: `${Math.random() * 100}vw`,
-                scale: Math.random() * 0.4 + 0.6
-              }}
-              animate={{ 
-                y: ["0vh", "-120vh"],
-                x: [`${Math.random() * 100}vw`, `${Math.random() * 100}vw`]
-              }}
-              transition={{ 
-                duration: Math.random() * 15 + 20, 
-                repeat: Infinity, 
-                ease: "linear",
-                delay: Math.random() * -20 // Negative delay so they are already on screen
-              }}
-            >
-              {/* Inner glow of the lantern */}
-              <div className="absolute inset-1 bg-yellow-300/40 animate-pulse rounded-full blur-sm" />
-              {/* Lantern tail */}
-              <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-1 h-6 bg-red-500/50 blur-[1px]" />
-            </motion.div>
-          ))}
+          {/* Floating Jack-o'-lanterns & Glowing Wisps */}
+          {[...Array(7)].map((_, i) => {
+            const isPumpkin = i % 2 === 0;
+            return (
+              <motion.div
+                key={`halloween-orb-${i}`}
+                className="absolute -bottom-20 select-none flex flex-col items-center"
+                initial={{
+                  x: `${(i * 14 + 5) % 95}vw`,
+                  scale: 0.7 + (i % 3) * 0.2,
+                  opacity: 0.6
+                }}
+                animate={{
+                  y: ["0vh", "-125vh"],
+                  x: [
+                    `${(i * 14 + 5) % 95}vw`,
+                    `${((i * 14 + 5) % 95) + (i % 2 === 0 ? 8 : -8)}vw`,
+                    `${(i * 14 + 5) % 95}vw`
+                  ],
+                  opacity: [0, 0.85, 0.85, 0]
+                }}
+                transition={{
+                  duration: 18 + (i * 3),
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: -(i * 3.5) // distributed immediately on screen
+                }}
+              >
+                {isPumpkin ? (
+                  /* Glowing Jack-o'-lantern */
+                  <div className="relative group">
+                    <span className="text-2xl md:text-3xl filter drop-shadow-[0_0_12px_rgba(249,115,22,0.85)]">
+                      🎃
+                    </span>
+                    {/* Eerie flickering fire aura */}
+                    <div className="absolute inset-0 bg-orange-500/30 blur-md rounded-full animate-pulse" />
+                  </div>
+                ) : (
+                  /* Eerie Ethereal Ghost / Spirit */
+                  <div className="relative">
+                    <span className="text-xl md:text-2xl filter drop-shadow-[0_0_10px_rgba(168,85,247,0.7)] opacity-80">
+                      👻
+                    </span>
+                    <div className="absolute inset-0 bg-purple-500/25 blur-sm rounded-full animate-ping" />
+                  </div>
+                )}
+                {/* Floating spectral wisp dust */}
+                <div className="w-1 h-3 mt-1 bg-gradient-to-b from-orange-400/50 to-transparent blur-[1px]" />
+              </motion.div>
+            );
+          })}
         </div>
 
-        {/* Radial Lighting Orbs */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[radial-gradient(circle,rgba(220,38,38,0.18)_0%,rgba(0,0,0,0)_70%)] rounded-full z-1 transform-gpu pointer-events-none hidden md:block" />
-        <div className="absolute bottom-1/4 right-1/4 w-[30rem] h-[30rem] bg-[radial-gradient(circle,rgba(220,38,38,0.1)_0%,rgba(0,0,0,0)_70%)] rounded-full z-1 transform-gpu pointer-events-none hidden md:block" />
+        {/* Radial Lighting Orbs - Halloween Orange & Mystical Purple Blend */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[radial-gradient(circle,rgba(249,115,22,0.18)_0%,rgba(0,0,0,0)_70%)] rounded-full z-1 transform-gpu pointer-events-none hidden md:block" />
+        <div className="absolute bottom-1/4 right-1/4 w-[30rem] h-[30rem] bg-[radial-gradient(circle,rgba(147,51,234,0.15)_0%,rgba(0,0,0,0)_70%)] rounded-full z-1 transform-gpu pointer-events-none hidden md:block" />
       </div>
 
-      {/* Floating Animated Geometric Elements */}
+      {/* Floating Animated Geometric Elements with Halloween Accents */}
       <motion.div
-        className="absolute top-1/3 left-10 w-24 h-24 border border-studio-gold/20 rotate-45 rounded-lg md:backdrop-blur-sm z-10 pointer-events-none hidden lg:block"
+        className="absolute top-1/3 left-10 w-24 h-24 border border-orange-500/30 rotate-45 rounded-lg md:backdrop-blur-sm z-10 pointer-events-none hidden lg:block shadow-[0_0_20px_rgba(249,115,22,0.15)]"
         animate={{ rotate: 405, y: [0, -20, 0] }}
         transition={{ duration: 22, repeat: Infinity, ease: "linear" }}
       />
       <motion.div
-        className="absolute bottom-1/4 right-10 w-32 h-32 border border-studio-red/30 -rotate-12 rounded-full md:backdrop-blur-sm z-10 pointer-events-none hidden lg:block"
+        className="absolute bottom-1/4 right-10 w-32 h-32 border border-purple-500/30 -rotate-12 rounded-full md:backdrop-blur-sm z-10 pointer-events-none hidden lg:block shadow-[0_0_20px_rgba(168,85,247,0.15)]"
         animate={{ scale: [1, 1.06, 1], y: [0, 20, 0] }}
         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
       />
@@ -120,6 +146,19 @@ export default function Hero({ onOpenTrailerModal }: HeroProps) {
             }}
             className="col-span-12 xl:col-span-7 text-left will-change-opacity"
           >
+            {/* Halloween Seasonal Special Badge */}
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: -10 },
+                visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+              }}
+              className="inline-flex items-center gap-2 px-3.5 py-1 mb-5 rounded-full bg-gradient-to-r from-orange-500/20 via-purple-600/20 to-amber-500/20 border border-orange-500/40 text-orange-300 text-xs font-bold tracking-widest uppercase backdrop-blur-md shadow-[0_0_20px_rgba(249,115,22,0.3)] select-none"
+            >
+              <span className="text-sm animate-bounce">🎃</span>
+              <span>MÙA HALLOWEEN 2026 • 3COVANGOC STUDIO</span>
+              <span className="text-sm">🦇</span>
+            </motion.div>
+
             {/* Tag */}
             <motion.h2
               variants={{

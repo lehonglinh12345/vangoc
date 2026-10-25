@@ -144,7 +144,13 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-neutral-500">
-          <p>{t.footer.copyright}</p>
+          <p className="flex items-center gap-1.5 flex-wrap justify-center md:justify-start">
+            <span>{t.footer.copyright}</span>
+            <span className="text-neutral-600 hidden sm:inline">•</span>
+            <span className="text-orange-400 font-semibold inline-flex items-center gap-1">
+              <span>🎃</span> Happy Halloween Season <span>🦇</span>
+            </span>
+          </p>
 
           {/* Dev Attribution */}
           <div className="flex items-center gap-2 text-[11px]">

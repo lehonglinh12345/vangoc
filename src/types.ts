@@ -67,3 +67,24 @@ export interface User {
   avatar?: string;
   role?: 'user' | 'admin';
 }
+
+export interface Product {
+  id: string;
+  name: string;
+  price: number;
+  originalPrice?: number;
+  image: string;
+  images?: string[];
+  description?: string;
+  category?: string;
+  variants?: string[];
+  inStock?: boolean;
+}
+
+export interface CartItem {
+  product: Product;
+  quantity: number;
+  selectedVariant?: string;
+}
+
+

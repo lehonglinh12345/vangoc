@@ -36,8 +36,11 @@ export default function Home() {
                   Ý Kiến & Cảm Nhận
                 </span>
               </div>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase tracking-tight text-white leading-tight">
-                CẢM NHẬN <span className="text-studio-gold">KHÁN GIẢ</span>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase tracking-tight text-white leading-tight flex items-center gap-3 flex-wrap">
+                <span>CẢM NHẬN <span className="text-studio-gold">KHÁN GIẢ</span></span>
+                <span className="text-xs px-3 py-1 rounded-full bg-gradient-to-r from-orange-500/20 to-purple-500/20 border border-orange-500/30 text-orange-400 font-bold tracking-widest inline-flex items-center gap-1.5 shadow-[0_0_12px_rgba(249,115,22,0.2)]">
+                  <span>🎃</span> MÙA HALLOWEEN <span>🦇</span>
+                </span>
               </h2>
               <p className="text-neutral-400 text-sm md:text-base mt-3 max-w-xl font-normal leading-relaxed">
                 Những phản hồi, cảm nhận chân thật từ khán giả dành cho các dự án của 3COVANGOC Studio.

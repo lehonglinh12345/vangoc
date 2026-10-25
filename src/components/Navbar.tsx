@@ -108,7 +108,7 @@ export default function Navbar() {
           >
             <div className="absolute inset-0 rounded-full bg-studio-red/20 blur-2xl group-hover:bg-studio-red/40 transition-all duration-700" />
             <div className="absolute inset-0 rounded-full border border-white/10 border-t-studio-red animate-spin [animation-duration:8s]" />
-            <div className="absolute inset-0 rounded-full border border-studio-red/20 animate-ping opacity-30" />
+            <div className="absolute inset-0 rounded-full border border-orange-500/30 animate-ping opacity-30" />
             <div className="relative w-full h-full rounded-full bg-black/50 backdrop-blur-md border border-white/10 flex items-center justify-center overflow-hidden shadow-[0_0_30px_rgba(255,0,0,0.15)] group-hover:scale-110 transition-all duration-500">
               <img
                 src="/images/logo_new.jpg"
@@ -118,6 +118,14 @@ export default function Navbar() {
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
               <div className="absolute inset-0 bg-studio-red/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             </div>
+
+            {/* Cute Halloween Pumpkin Accent on Studio Logo */}
+            <span
+              className="absolute -top-1.5 -right-1 text-base select-none pointer-events-none filter drop-shadow-[0_0_8px_rgba(249,115,22,0.9)] animate-bounce"
+              title="Happy Halloween Season!"
+            >
+              🎃
+            </span>
           </Link>
           <Link to="/" className="block">
             <div className="w-28 sm:w-56 md:w-64 overflow-hidden relative group">
@@ -134,8 +142,8 @@ export default function Navbar() {
               <div className="marquee-track flex whitespace-nowrap items-center">
                 {[0, 1, 2, 3].map((i) => (
                   <div key={i} className="pr-8 flex items-center shrink-0">
-                    <span className="text-lg md:text-xl font-black tracking-widest uppercase text-yellow-400 group-hover:text-yellow-300 transition-colors drop-shadow-[0_0_10px_rgba(250,204,21,0.5)] flex items-center gap-2">
-                      <span className="text-xl"></span> 3COVANGOC STUDIO <span className="text-xl">🏮</span>
+                    <span className="text-lg md:text-xl font-black tracking-widest uppercase text-amber-400 group-hover:text-orange-400 transition-colors drop-shadow-[0_0_10px_rgba(249,115,22,0.6)] flex items-center gap-2">
+                      <span className="text-xl">🎃</span> 3COVANGOC STUDIO <span className="text-xl">🦇</span>
                     </span>
                   </div>
                 ))}
@@ -204,8 +212,8 @@ export default function Navbar() {
                     key={l.code}
                     onClick={() => { setLanguage(l.code); setLangOpen(false); }}
                     className={`w-full px-4 py-2 text-[10px] font-bold tracking-wider text-left transition-all cursor-pointer ${language === l.code
-                        ? 'bg-studio-red text-white'
-                        : 'text-white/60 hover:bg-white/5 hover:text-white'
+                      ? 'bg-studio-red text-white'
+                      : 'text-white/60 hover:bg-white/5 hover:text-white'
                       }`}
                   >
                     {l.label}

@@ -79,11 +79,21 @@ export default function LoadingScreen() {
               ))}
             </div>
             <motion.div
-              className="h-[2px] bg-gradient-to-r from-transparent via-studio-gold to-transparent mt-3 w-full max-w-xs mx-auto"
+              className="h-[2px] bg-gradient-to-r from-transparent via-orange-500 to-transparent mt-3 w-full max-w-xs mx-auto"
               initial={{ width: 0 }}
               animate={{ width: "100%" }}
               transition={{ delay: 0.9, duration: 1 }}
             />
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.1, duration: 0.6 }}
+              className="mt-2.5 flex items-center gap-2 text-[10px] md:text-xs uppercase tracking-[0.3em] text-orange-400 font-bold drop-shadow-[0_0_8px_rgba(249,115,22,0.6)]"
+            >
+              <span className="animate-bounce">🎃</span>
+              <span>Halloween Special Edition</span>
+              <span className="animate-pulse">🦇</span>
+            </motion.div>
           </motion.div>
 
           {/* Skip button if user wants immediate access */}

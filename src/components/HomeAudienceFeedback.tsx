@@ -117,7 +117,7 @@ export default function HomeAudienceFeedback() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: index * 0.08 }}
-              className="group relative flex flex-col justify-between rounded-3xl border border-white/10 bg-gradient-to-b from-neutral-900/80 via-neutral-900/60 to-black/80 p-6 backdrop-blur-md hover:border-studio-gold/40 hover:bg-neutral-900/90 transition-all duration-300 shadow-xl hover:shadow-[0_10px_30px_rgba(217,119,6,0.1)]"
+              className="group relative flex flex-col justify-between rounded-3xl border border-white/10 bg-gradient-to-b from-neutral-900/80 via-neutral-900/60 to-black/80 p-6 backdrop-blur-md hover:border-orange-500/40 hover:bg-neutral-900/90 transition-all duration-300 shadow-xl hover:shadow-[0_10px_30px_rgba(249,115,22,0.12)]"
             >
               <div>
                 {/* Phần đầu: Avatar, Kênh, Huy hiệu YouTube & Thời gian */}
