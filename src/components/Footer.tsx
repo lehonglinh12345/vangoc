@@ -147,8 +147,8 @@ export default function Footer() {
           <p className="flex items-center gap-1.5 flex-wrap justify-center md:justify-start">
             <span>{t.footer.copyright}</span>
             <span className="text-neutral-600 hidden sm:inline">•</span>
-            <span className="text-orange-400 font-semibold inline-flex items-center gap-1">
-              <span>🎃</span> Happy Halloween Season <span>🦇</span>
+            <span className="text-emerald-400 font-semibold inline-flex items-center gap-1">
+              <span>🎄</span> Merry Christmas & Happy Holidays <span>🎅❄️</span>
             </span>
           </p>
 

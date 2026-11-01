@@ -29,8 +29,8 @@ export default function App() {
             <div className="ambient-bg fixed inset-0 pointer-events-none z-0 bg-[#0A0A0A] transition-colors duration-500">
               {/* Subtle grid pattern */}
               <div className="ambient-grid absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:4rem_4rem]" />
-              {/* Top ambient Halloween glow - Orange & Purple blend */}
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-gradient-to-b from-orange-600/15 via-purple-900/10 to-transparent blur-3xl opacity-70 pointer-events-none" />
+              {/* Top ambient Christmas glow - Crimson Red & Pine Emerald blend */}
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-gradient-to-b from-red-600/15 via-emerald-900/10 to-transparent blur-3xl opacity-70 pointer-events-none" />
             </div>
 
             <div className="relative min-h-screen flex flex-col font-sans selection:bg-studio-red selection:text-white bg-transparent">

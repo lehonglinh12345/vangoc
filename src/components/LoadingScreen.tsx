@@ -1,17 +1,225 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { SkipForward } from 'lucide-react';
+
+declare global {
+  interface Window {
+    YT?: {
+      Player: new (
+        element: HTMLElement | string,
+        options: {
+          videoId?: string;
+          playerVars?: Record<string, number | string>;
+          events?: {
+            onReady?: (event: { target: YTPlayerInstance }) => void;
+            onStateChange?: (event: { data: number; target: YTPlayerInstance }) => void;
+          };
+        }
+      ) => YTPlayerInstance;
+    };
+    onYouTubeIframeAPIReady?: () => void;
+    __introFinished?: boolean;
+  }
+}
+
+interface YTPlayerInstance {
+  playVideo: () => void;
+  pauseVideo: () => void;
+  mute: () => void;
+  unMute: () => void;
+  isMuted: () => boolean;
+  setVolume: (volume: number) => void;
+  getPlayerState: () => number;
+  getCurrentTime: () => number;
+  destroy: () => void;
+}
+
+const INTRO_VIDEO_ID = '1giQVuoTAFM';
 
 export default function LoadingScreen() {
   const [isVisible, setIsVisible] = useState(true);
+  const [needYtAudioBridge, setNeedYtAudioBridge] = useState(false);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsVisible(false);
-    }, 2400);
-    return () => clearTimeout(timer);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const ytAudioContainerRef = useRef<HTMLDivElement>(null);
+  const ytPlayerRef = useRef<YTPlayerInstance | null>(null);
+
+  const finishIntro = useCallback(() => {
+    window.__introFinished = true;
+    window.dispatchEvent(new Event('intro-finished'));
+    setIsVisible(false);
   }, []);
 
-  const titleWords = "HELLO CHÚNG MÌNH LÀ 3 CÔ VÀNG NGỌC".split(" ");
+  // Khi người dùng có tương tác (click/chạm/phím), chuyển hẳn sang âm thanh gốc của thẻ <video>
+  const switchToNativeAudio = useCallback(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    try {
+      v.muted = false;
+      v.volume = 1.0;
+      if (v.paused) {
+        v.play().catch(() => {});
+      }
+      if (ytPlayerRef.current) {
+        try {
+          ytPlayerRef.current.mute();
+          ytPlayerRef.current.destroy();
+        } catch {
+          // Ignore
+        }
+        ytPlayerRef.current = null;
+      }
+      setNeedYtAudioBridge(false);
+    } catch {
+      // Ignore
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isVisible) return;
+    const v = videoRef.current;
+    if (!v) return;
+
+    let cancelled = false;
+
+    const startPlayback = async () => {
+      if (cancelled || !videoRef.current) return;
+      const vid = videoRef.current;
+      try {
+        vid.muted = false;
+        vid.volume = 1.0;
+        await vid.play();
+      } catch (err: unknown) {
+        if (cancelled || !videoRef.current) return;
+        const errorName = err instanceof Error ? err.name : '';
+        if (errorName === 'AbortError') {
+          setTimeout(() => {
+            if (!cancelled && videoRef.current) {
+              videoRef.current.muted = false;
+              videoRef.current.volume = 1.0;
+              videoRef.current.play().catch(() => {
+                if (!cancelled && videoRef.current) {
+                  videoRef.current.muted = true;
+                  videoRef.current.play().catch(() => {});
+                  setNeedYtAudioBridge(true);
+                }
+              });
+            }
+          }, 40);
+          return;
+        }
+
+        // Nếu localhost chưa có quyền phát tiếng trực tiếp khi F5 trên Edge,
+        // cho video 1080p chạy ngay lập tức và kích hoạt luồng âm thanh tự động từ YouTube (vốn đã có quyền Autoplay trên trình duyệt của bạn)
+        vid.muted = true;
+        vid.play().catch(() => {});
+        setNeedYtAudioBridge(true);
+      }
+    };
+
+    startPlayback();
+
+    // Chỉ lắng nghe các sự kiện User Activation hợp lệ của trình duyệt (KHÔNG gắn mousemove vì mousemove làm trình duyệt tự pause video)
+    const activationEvents = ['pointerdown', 'mousedown', 'touchstart', 'keydown', 'click'];
+    activationEvents.forEach((evt) => {
+      window.addEventListener(evt, switchToNativeAudio, { once: true, passive: true });
+    });
+
+    return () => {
+      cancelled = true;
+      activationEvents.forEach((evt) => {
+        window.removeEventListener(evt, switchToNativeAudio);
+      });
+    };
+  }, [isVisible, switchToNativeAudio]);
+
+  // Luồng âm thanh tự động (chỉ bật khi trình duyệt chặn tiếng thẻ <video> trên localhost lúc vừa F5)
+  useEffect(() => {
+    if (!isVisible || !needYtAudioBridge) return;
+
+    let syncInterval: ReturnType<typeof setInterval>;
+
+    const initYtAudio = () => {
+      if (!ytAudioContainerRef.current || !window.YT || !window.YT.Player) return;
+
+      ytPlayerRef.current = new window.YT.Player(ytAudioContainerRef.current, {
+        videoId: INTRO_VIDEO_ID,
+        playerVars: {
+          autoplay: 1,
+          mute: 0,
+          controls: 0,
+          rel: 0,
+          playsinline: 1,
+          origin: window.location.origin,
+        },
+        events: {
+          onReady: (event) => {
+            try {
+              event.target.unMute();
+              event.target.setVolume(100);
+              event.target.playVideo();
+            } catch {
+              // Ignore
+            }
+          },
+          onStateChange: (event) => {
+            if (event.data === 1 && videoRef.current) {
+              try {
+                const ytTime = event.target.getCurrentTime();
+                if (Math.abs(videoRef.current.currentTime - ytTime) > 0.25) {
+                  videoRef.current.currentTime = ytTime;
+                }
+              } catch {
+                // Ignore
+              }
+
+              syncInterval = setInterval(() => {
+                try {
+                  if (!videoRef.current || !ytPlayerRef.current) return;
+                  const ytTime = ytPlayerRef.current.getCurrentTime();
+                  if (ytTime > 0 && Math.abs(videoRef.current.currentTime - ytTime) > 0.3) {
+                    videoRef.current.currentTime = ytTime;
+                  }
+                } catch {
+                  // Ignore
+                }
+              }, 500);
+            }
+          },
+        },
+      });
+    };
+
+    if (window.YT && window.YT.Player) {
+      initYtAudio();
+    } else {
+      const existingScript = document.querySelector(
+        'script[src="https://www.youtube.com/iframe_api"]'
+      );
+      if (!existingScript) {
+        const tag = document.createElement('script');
+        tag.src = 'https://www.youtube.com/iframe_api';
+        document.head.appendChild(tag);
+      }
+      const prevCallback = window.onYouTubeIframeAPIReady;
+      window.onYouTubeIframeAPIReady = () => {
+        if (prevCallback) prevCallback();
+        initYtAudio();
+      };
+    }
+
+    return () => {
+      clearInterval(syncInterval);
+      if (ytPlayerRef.current) {
+        try {
+          ytPlayerRef.current.destroy();
+        } catch {
+          // Ignore
+        }
+        ytPlayerRef.current = null;
+      }
+    };
+  }, [isVisible, needYtAudioBridge]);
 
   return (
     <AnimatePresence>
@@ -19,90 +227,55 @@ export default function LoadingScreen() {
         <motion.div
           id="loading-screen"
           initial={{ opacity: 1 }}
-          exit={{ opacity: 0, transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] } }}
-          className="fixed inset-0 z-[10001] bg-[#0A0A0A] flex items-center justify-center flex-col overflow-hidden"
+          exit={{ opacity: 0, transition: { duration: 0.65, ease: 'easeOut' } }}
+          onClick={switchToNativeAudio}
+          className="fixed inset-0 z-[10001] bg-black flex items-center justify-center overflow-hidden select-none"
         >
-          {/* Ambient Background with subtle zoom */}
-          <motion.div
-            initial={{ scale: 1.2, opacity: 0 }}
-            animate={{ scale: 1, opacity: 0.18 }}
-            transition={{ duration: 2, ease: [0.76, 0, 0.24, 1] }}
-            className="absolute inset-0 z-0 will-change-transform pointer-events-none"
-          >
-            <img
-              src="/images/background.jpg"
-              alt="Loading Background"
-              className="w-full h-full object-cover md:object-[center_20%]"
-              referrerPolicy="no-referrer"
+          {/* Hình ảnh: Thẻ <video> 1080p Full HD nội bộ sắc nét 100%, mượt 60fps, không bao giờ có giao diện YouTube */}
+          <div className="relative w-[160vw] sm:w-[128vw] md:w-full aspect-video md:aspect-auto md:h-full max-w-none overflow-hidden flex items-center justify-center bg-black transform-gpu">
+            <video
+              ref={videoRef}
+              src="/videos/intro.mp4"
+              playsInline
+              preload="auto"
+              onEnded={finishIntro}
+              className="w-full h-full object-cover pointer-events-none transform-gpu"
             />
-          </motion.div>
+          </div>
 
-          {/* Logo with reveal effect */}
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 1.2, ease: [0.76, 0, 0.24, 1] }}
-            className="w-48 h-48 md:w-64 md:h-64 relative z-10 will-change-transform"
-          >
+          {/* Kênh âm thanh ẩn dự phòng (tự phát tiếng nhờ quyền Media Engagement của YouTube trên trình duyệt khi F5) */}
+          {needYtAudioBridge && (
+            <div className="fixed -bottom-10 -right-10 w-1 h-1 opacity-0 pointer-events-none overflow-hidden">
+              <div ref={ytAudioContainerRef} />
+            </div>
+          )}
+
+          {/* Subtle Top-Left Studio Christmas Badge */}
+          <div className="absolute top-4 left-4 sm:top-5 sm:left-6 z-20 flex items-center gap-2.5 pointer-events-none bg-black/70 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full border border-white/10">
             <img
               src="/images/logo_new.jpg"
-              alt="3covangoc Studio Logo"
-              className="w-full h-full object-cover rounded-full filter drop-shadow-[0_0_20px_rgba(220,38,38,0.4)]"
-              referrerPolicy="no-referrer"
+              alt="3COVANGOC Logo"
+              className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover border border-red-500/60 shrink-0"
             />
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent"
-              initial={{ height: "100%" }}
-              animate={{ height: "0%" }}
-              transition={{ delay: 0.8, duration: 1.2, ease: "easeInOut" }}
-            />
-          </motion.div>
+            <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider sm:tracking-widest text-amber-300 flex items-center gap-1.5">
+              <span>🎄</span> 3COVANGOC STUDIO • GIÁNG SINH 2026 <span>🎅❄️</span>
+            </span>
+          </div>
 
-          {/* Staggered Heading Text */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            className="mt-8 flex flex-col items-center justify-center overflow-hidden z-10 px-4"
-          >
-            <div className="flex flex-wrap justify-center gap-x-3 gap-y-2 max-w-lg text-center text-studio-gold font-black uppercase text-sm md:text-lg tracking-widest drop-shadow-[0_0_12px_rgba(245,158,11,0.6)]">
-              {titleWords.map((word, idx) => (
-                <motion.span
-                  key={idx}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 + idx * 0.08, type: "spring", stiffness: 200 }}
-                  className="inline-block"
-                >
-                  {word}
-                </motion.span>
-              ))}
-            </div>
-            <motion.div
-              className="h-[2px] bg-gradient-to-r from-transparent via-orange-500 to-transparent mt-3 w-full max-w-xs mx-auto"
-              initial={{ width: 0 }}
-              animate={{ width: "100%" }}
-              transition={{ delay: 0.9, duration: 1 }}
-            />
-            <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.1, duration: 0.6 }}
-              className="mt-2.5 flex items-center gap-2 text-[10px] md:text-xs uppercase tracking-[0.3em] text-orange-400 font-bold drop-shadow-[0_0_8px_rgba(249,115,22,0.6)]"
+          {/* Bottom-Right Skip Button Only */}
+          <div className="absolute bottom-5 right-4 sm:bottom-6 sm:right-6 z-20 flex items-center">
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                finishIntro();
+              }}
+              className="px-4 py-2 rounded-full bg-black/75 hover:bg-red-600 border border-white/15 hover:border-red-500 text-white/90 hover:text-white text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-colors cursor-pointer"
             >
-              <span className="animate-bounce">🎃</span>
-              <span>Halloween Special Edition</span>
-              <span className="animate-pulse">🦇</span>
-            </motion.div>
-          </motion.div>
-
-          {/* Skip button if user wants immediate access */}
-          <button
-            onClick={() => setIsVisible(false)}
-            className="absolute bottom-8 text-neutral-500 hover:text-white text-xs uppercase tracking-widest transition-colors z-20 cursor-pointer"
-          >
-            Bỏ qua
-          </button>
+              <span>Bỏ qua</span>
+              <SkipForward size={13} />
+            </button>
+          </div>
         </motion.div>
       )}
     </AnimatePresence>

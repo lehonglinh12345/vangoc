@@ -14,17 +14,29 @@ export default function Hero({ onOpenTrailerModal }: HeroProps) {
   const scrollIndicatorOpacity = useTransform(scrollY, [0, 250], [1, 0]);
 
   const [bgIndex, setBgIndex] = useState(0);
+  const [introDone, setIntroDone] = useState(() => Boolean(window.__introFinished));
   const backgrounds = [
     '/images/background.jpg',
     '/images/input_file_2.png'
   ];
 
   useEffect(() => {
+    if (window.__introFinished) {
+      setIntroDone(true);
+      return;
+    }
+    const onIntroFinished = () => setIntroDone(true);
+    window.addEventListener('intro-finished', onIntroFinished, { once: true });
+    return () => window.removeEventListener('intro-finished', onIntroFinished);
+  }, []);
+
+  useEffect(() => {
+    if (!introDone) return;
     const interval = setInterval(() => {
       setBgIndex((prev) => (prev === 0 ? 1 : 0));
     }, 6000);
     return () => clearInterval(interval);
-  }, []);
+  }, [introDone]);
 
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
@@ -57,14 +69,13 @@ export default function Hero({ onOpenTrailerModal }: HeroProps) {
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent opacity-70 z-10" />
 
-        {/* Halloween Atmosphere: Floating Jack-o'-lanterns, Spooky Wisps & Flying Bats */}
+        {/* Christmas Atmosphere: Floating Ornaments, Snowflakes & Festive Lights */}
         <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden">
-          {/* Floating Jack-o'-lanterns & Glowing Wisps */}
           {[...Array(7)].map((_, i) => {
-            const isPumpkin = i % 2 === 0;
+            const isTreeOrGift = i % 2 === 0;
             return (
               <motion.div
-                key={`halloween-orb-${i}`}
+                key={`christmas-orb-${i}`}
                 className="absolute -bottom-20 select-none flex flex-col items-center"
                 initial={{
                   x: `${(i * 14 + 5) % 95}vw`,
@@ -84,47 +95,44 @@ export default function Hero({ onOpenTrailerModal }: HeroProps) {
                   duration: 18 + (i * 3),
                   repeat: Infinity,
                   ease: "easeInOut",
-                  delay: -(i * 3.5) // distributed immediately on screen
+                  delay: -(i * 3.5)
                 }}
               >
-                {isPumpkin ? (
-                  /* Glowing Jack-o'-lantern */
+                {isTreeOrGift ? (
+                  /* Glowing Christmas Tree / Gift */
                   <div className="relative group">
-                    <span className="text-2xl md:text-3xl filter drop-shadow-[0_0_12px_rgba(249,115,22,0.85)]">
-                      🎃
+                    <span className="text-2xl md:text-3xl">
+                      {i % 4 === 0 ? '🎄' : '🎁'}
                     </span>
-                    {/* Eerie flickering fire aura */}
-                    <div className="absolute inset-0 bg-orange-500/30 blur-md rounded-full animate-pulse" />
                   </div>
                 ) : (
-                  /* Eerie Ethereal Ghost / Spirit */
+                  /* Sparkling Snowflake / Star */
                   <div className="relative">
-                    <span className="text-xl md:text-2xl filter drop-shadow-[0_0_10px_rgba(168,85,247,0.7)] opacity-80">
-                      👻
+                    <span className="text-xl md:text-2xl opacity-85">
+                      ❄️
                     </span>
-                    <div className="absolute inset-0 bg-purple-500/25 blur-sm rounded-full animate-ping" />
                   </div>
                 )}
-                {/* Floating spectral wisp dust */}
-                <div className="w-1 h-3 mt-1 bg-gradient-to-b from-orange-400/50 to-transparent blur-[1px]" />
+                {/* Floating golden stardust trail */}
+                <div className="w-1 h-3 mt-1 bg-gradient-to-b from-amber-400/50 to-transparent blur-[1px]" />
               </motion.div>
             );
           })}
         </div>
 
-        {/* Radial Lighting Orbs - Halloween Orange & Mystical Purple Blend */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[radial-gradient(circle,rgba(249,115,22,0.18)_0%,rgba(0,0,0,0)_70%)] rounded-full z-1 transform-gpu pointer-events-none hidden md:block" />
-        <div className="absolute bottom-1/4 right-1/4 w-[30rem] h-[30rem] bg-[radial-gradient(circle,rgba(147,51,234,0.15)_0%,rgba(0,0,0,0)_70%)] rounded-full z-1 transform-gpu pointer-events-none hidden md:block" />
+        {/* Radial Lighting Orbs - Christmas Crimson Red & Pine Emerald Blend */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[radial-gradient(circle,rgba(220,38,38,0.18)_0%,rgba(0,0,0,0)_70%)] rounded-full z-1 transform-gpu pointer-events-none hidden md:block" />
+        <div className="absolute bottom-1/4 right-1/4 w-[30rem] h-[30rem] bg-[radial-gradient(circle,rgba(16,185,129,0.15)_0%,rgba(0,0,0,0)_70%)] rounded-full z-1 transform-gpu pointer-events-none hidden md:block" />
       </div>
 
-      {/* Floating Animated Geometric Elements with Halloween Accents */}
+      {/* Floating Animated Geometric Elements with Christmas Accents */}
       <motion.div
-        className="absolute top-1/3 left-10 w-24 h-24 border border-orange-500/30 rotate-45 rounded-lg md:backdrop-blur-sm z-10 pointer-events-none hidden lg:block shadow-[0_0_20px_rgba(249,115,22,0.15)]"
+        className="absolute top-1/3 left-10 w-24 h-24 border border-red-500/30 rotate-45 rounded-lg md:backdrop-blur-sm z-10 pointer-events-none hidden lg:block shadow-[0_0_20px_rgba(220,38,38,0.15)]"
         animate={{ rotate: 405, y: [0, -20, 0] }}
         transition={{ duration: 22, repeat: Infinity, ease: "linear" }}
       />
       <motion.div
-        className="absolute bottom-1/4 right-10 w-32 h-32 border border-purple-500/30 -rotate-12 rounded-full md:backdrop-blur-sm z-10 pointer-events-none hidden lg:block shadow-[0_0_20px_rgba(168,85,247,0.15)]"
+        className="absolute bottom-1/4 right-10 w-32 h-32 border border-emerald-500/30 -rotate-12 rounded-full md:backdrop-blur-sm z-10 pointer-events-none hidden lg:block shadow-[0_0_20px_rgba(16,185,129,0.15)]"
         animate={{ scale: [1, 1.06, 1], y: [0, 20, 0] }}
         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
       />
@@ -146,17 +154,17 @@ export default function Hero({ onOpenTrailerModal }: HeroProps) {
             }}
             className="col-span-12 xl:col-span-7 text-left will-change-opacity"
           >
-            {/* Halloween Seasonal Special Badge */}
+            {/* Christmas Seasonal Special Badge */}
             <motion.div
               variants={{
                 hidden: { opacity: 0, y: -10 },
                 visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
               }}
-              className="inline-flex items-center gap-2 px-3.5 py-1 mb-5 rounded-full bg-gradient-to-r from-orange-500/20 via-purple-600/20 to-amber-500/20 border border-orange-500/40 text-orange-300 text-xs font-bold tracking-widest uppercase backdrop-blur-md shadow-[0_0_20px_rgba(249,115,22,0.3)] select-none"
+              className="inline-flex items-center gap-2 px-3.5 py-1 mb-5 rounded-full bg-gradient-to-r from-red-600/25 via-emerald-600/25 to-amber-500/20 border border-red-500/40 text-amber-300 text-xs font-bold tracking-widest uppercase backdrop-blur-md shadow-[0_0_20px_rgba(220,38,38,0.3)] select-none"
             >
-              <span className="text-sm animate-bounce">🎃</span>
-              <span>MÙA HALLOWEEN 2026 • 3COVANGOC STUDIO</span>
-              <span className="text-sm">🦇</span>
+              <span className="text-sm animate-bounce">🎄</span>
+              <span>MÙA GIÁNG SINH 2026 • 3COVANGOC STUDIO</span>
+              <span className="text-sm">🎅❄️</span>
             </motion.div>
 
             {/* Tag */}
@@ -246,21 +254,27 @@ export default function Hero({ onOpenTrailerModal }: HeroProps) {
 
               {/* Video Container Frame */}
               <div className="relative aspect-video w-full rounded-xl md:rounded-2xl overflow-hidden border border-white/15 bg-black shadow-2xl">
-                {/* Embed YouTube trailer for Nhà Có Giỗ */}
-                <iframe
-                  src="https://www.youtube.com/embed/TM142-7LiiQ?autoplay=1&mute=1&controls=0&loop=1&playlist=TM142-7LiiQ"
-                  className={`absolute inset-0 w-full h-full border-none overflow-hidden transition-all duration-1000 group-hover:scale-105 pointer-events-none ${bgIndex === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
-                  allow="autoplay; encrypted-media"
-                  title="Trailer Nhà Có Giỗ"
-                />
+                {introDone && (
+                  <>
+                    {/* Embed YouTube trailer for Nhà Có Giỗ */}
+                    <iframe
+                      src="https://www.youtube.com/embed/TM142-7LiiQ?autoplay=1&mute=1&controls=0&loop=1&playlist=TM142-7LiiQ&playsinline=1"
+                      loading="lazy"
+                      className={`absolute inset-0 w-full h-full border-none overflow-hidden transition-opacity duration-700 pointer-events-none ${bgIndex === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+                      allow="autoplay; encrypted-media"
+                      title="Trailer Nhà Có Giỗ"
+                    />
 
-                {/* Embed YouTube trailer for Rực Sáng Đêm Thu */}
-                <iframe
-                  src="https://www.youtube.com/embed/v7f4NHtvGR8?autoplay=1&mute=1&controls=0&loop=1&playlist=v7f4NHtvGR8"
-                  className={`absolute inset-0 w-full h-full border-none overflow-hidden transition-all duration-1000 group-hover:scale-105 pointer-events-none ${bgIndex === 1 ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
-                  allow="autoplay; encrypted-media"
-                  title="Trailer Rực Sáng Đêm Thu"
-                />
+                    {/* Embed YouTube trailer for Rực Sáng Đêm Thu */}
+                    <iframe
+                      src="https://www.youtube.com/embed/v7f4NHtvGR8?autoplay=1&mute=1&controls=0&loop=1&playlist=v7f4NHtvGR8&playsinline=1"
+                      loading="lazy"
+                      className={`absolute inset-0 w-full h-full border-none overflow-hidden transition-opacity duration-700 pointer-events-none ${bgIndex === 1 ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+                      allow="autoplay; encrypted-media"
+                      title="Trailer Rực Sáng Đêm Thu"
+                    />
+                  </>
+                )}
 
                 {/* Vignette Gradient Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent pointer-events-none" />

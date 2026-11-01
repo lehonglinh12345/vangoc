@@ -119,12 +119,12 @@ export default function Navbar() {
               <div className="absolute inset-0 bg-studio-red/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             </div>
 
-            {/* Cute Halloween Pumpkin Accent on Studio Logo */}
+            {/* Cute Christmas Accent on Studio Logo */}
             <span
-              className="absolute -top-1.5 -right-1 text-base select-none pointer-events-none filter drop-shadow-[0_0_8px_rgba(249,115,22,0.9)] animate-bounce"
-              title="Happy Halloween Season!"
+              className="absolute -top-1.5 -right-1 text-base select-none pointer-events-none filter drop-shadow-[0_0_8px_rgba(220,38,38,0.9)] animate-bounce"
+              title="Merry Christmas Season!"
             >
-              🎃
+              🎅
             </span>
           </Link>
           <Link to="/" className="block">
@@ -142,8 +142,8 @@ export default function Navbar() {
               <div className="marquee-track flex whitespace-nowrap items-center">
                 {[0, 1, 2, 3].map((i) => (
                   <div key={i} className="pr-8 flex items-center shrink-0">
-                    <span className="text-lg md:text-xl font-black tracking-widest uppercase text-amber-400 group-hover:text-orange-400 transition-colors drop-shadow-[0_0_10px_rgba(249,115,22,0.6)] flex items-center gap-2">
-                      <span className="text-xl">🎃</span> 3COVANGOC STUDIO <span className="text-xl">🦇</span>
+                    <span className="text-lg md:text-xl font-black tracking-widest uppercase text-amber-300 group-hover:text-emerald-400 transition-colors drop-shadow-[0_0_10px_rgba(220,38,38,0.6)] flex items-center gap-2">
+                      <span className="text-xl">🎄</span> 3COVANGOC STUDIO <span className="text-xl">🎅❄️</span>
                     </span>
                   </div>
                 ))}
