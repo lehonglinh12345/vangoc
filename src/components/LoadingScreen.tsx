@@ -119,8 +119,8 @@ export default function LoadingScreen() {
           */}
           {/*
             Video Container:
-            - Trên điện thoại (<md): w-full h-[100dvh] object-fill giúp video bóp lại vừa khít 100% theo chiều dọc khung màn hình điện thoại (đầy tràn màn hình, không còn viền đen).
-            - Trên PC (md+): w-full h-full object-cover giữ nguyên tỉ lệ chuẩn đẹp mắt.
+            - Trên điện thoại (<md): h-[100dvh] tràn viền, bóp nhẹ vừa phải (scale-y-[1.08] scale-x-[0.96] object-cover) giúp video đầy khung điện thoại mà nhân vật vẫn tự nhiên, không bị méo.
+            - Trên PC (md+): w-full h-full object-cover tỉ lệ chuẩn.
           */}
           <div className="relative w-full h-[100dvh] md:h-full overflow-hidden flex items-center justify-center bg-black transform-gpu">
             <video
@@ -129,7 +129,7 @@ export default function LoadingScreen() {
               playsInline
               preload="auto"
               onEnded={finishIntro}
-              className="w-full h-full object-fill md:object-cover pointer-events-none transform-gpu"
+              className="w-full h-full object-cover scale-y-[1.08] scale-x-[0.96] md:scale-100 pointer-events-none transform-gpu"
             />
           </div>
 
